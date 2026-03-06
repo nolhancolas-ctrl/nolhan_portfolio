@@ -3,7 +3,7 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/mousewheel";
 import "./globals.css";
 import type { Metadata } from "next";
-import GradientBackground from "@/components/visual/GradientBackground";
+import GradientBackground from "@/components/layout/visual/GradientBackground";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { LangProvider } from "@/hooks/useLang"; // ⬅️ nouveau

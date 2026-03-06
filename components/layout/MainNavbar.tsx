@@ -6,14 +6,12 @@ import { useLang } from "@/hooks/useLang";
 type Lang = "en" | "fr";
 
 const LINKS = [
-  { id: "hero", key: "hero", labelEn: "Intro", labelFr: "Intro" },
-  { id: "process", key: "process", labelEn: "Process", labelFr: "Process" },
-  { id: "design", key: "design", labelEn: "Designs", labelFr: "Designs" },
-  { id: "modules", key: "modules", labelEn: "Modules", labelFr: "Modules" },
-  { id: "styles", key: "styles", labelEn: "Styles", labelFr: "Styles" },
-  { id: "pricing", key: "pricing", labelEn: "Pricing", labelFr: "Tarifs" },
-  { id: "faq", key: "faq", labelEn: "FAQ", labelFr: "FAQ" },
-  { id: "contact", key: "contact", labelEn: "Contact", labelFr: "Contact" },
+  { key: "hero", href: "#hero", labelEn: "Intro", labelFr: "Intro" },
+  { key: "process", href: "#process", labelEn: "Process", labelFr: "Process" },
+  { key: "work", href: "/work", labelEn: "Work", labelFr: "Projets" },
+  { key: "pricing", href: "#pricing", labelEn: "Pricing", labelFr: "Tarifs" },
+  { key: "faq", href: "#faq", labelEn: "FAQ", labelFr: "FAQ" },
+  { key: "contact", href: "#contact", labelEn: "Contact", labelFr: "Contact" },
 ];
 
 export default function MainNavbar() {
@@ -148,7 +146,7 @@ export default function MainNavbar() {
                 {LINKS.map((link) => (
                   <li key={link.key}>
                     <a
-                      href={`#${link.id}`}
+                      href={link.href}
                       onClick={handleNavClick}
                       className="
                         flex items-center justify-center
@@ -156,9 +154,7 @@ export default function MainNavbar() {
                         transition text-center
                       "
                     >
-                      <span>
-                        {lang === "en" ? link.labelEn : link.labelFr}
-                      </span>
+                      <span>{lang === "en" ? link.labelEn : link.labelFr}</span>
                     </a>
                   </li>
                 ))}
