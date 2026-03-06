@@ -32,7 +32,7 @@ export default function WorkPage() {
       </PageSection>
 
       <PageSection id="software">
-        <WorkSoftwareSection images={softwares} />
+        <WorkSoftwareSection/>
       </PageSection>
 
       <PageSection id="modules">
