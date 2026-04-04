@@ -4,9 +4,7 @@ import WorkIntroSection from "@/components/sections/work/WorkIntroSection";
 import WorkLogosSection from "@/components/sections/work/WorkLogosSection";
 import DesignSection from "@/components/sections/work/design/DesignSection";
 import WorkSoftwareSection from "@/components/sections/work/WorkSoftwareSection";
-import ProjectsSection from "@/components/sections/work/Project/ProjectsSection";
 import ContactSection from "@/components/sections/shared/BookCallSection";
-import WorkStylerSection from "@/components/sections/work/WorkStylerSection";
 import { getLogoImages, getSoftwareImages } from "@/lib/workAssets";
 import MainNavbar from "@/components/layout/MainNavbar";
 
@@ -33,14 +31,6 @@ export default function WorkPage() {
 
       <PageSection id="software">
         <WorkSoftwareSection/>
-      </PageSection>
-
-      <PageSection id="modules">
-        <ProjectsSection />
-      </PageSection>
-
-      <PageSection id="styles">
-        <WorkStylerSection />
       </PageSection>
 
       <PageSection id="contact" className="pb-18">

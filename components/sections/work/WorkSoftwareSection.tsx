@@ -17,11 +17,11 @@ type SoftwareGroup = {
 
 // Noms courts & parlants pour chaque app
 const SOFTWARE_NAMES = [
-  "Budget Insights",    // 01
-  "Meal Planner",       // 02
-  "Ops Dashboard",      // 03
+  "Meal Planner",    // 01
+  "Habit & Analytics",       // 02
+  "Budget Insights",      // 03
   "Fitness Tracker",    // 04
-  "Habit & Analytics",  // 05
+  "Ops Dashboard",  // 05
   "Client CRM",         // 06
 ];
 
@@ -31,7 +31,7 @@ const SOFTWARE_GROUPS: SoftwareGroup[] = Array.from({ length: 6 }, (_, i) => {
   const name = SOFTWARE_NAMES[i] ?? `App 0${appId}`;
   const pages: SoftwarePage[] = Array.from({ length: 4 }, (_, j) => {
     const pageIndex = j + 1; // 1..4
-    const src = `/app/app${appId}${pageIndex}.png`;
+    const src = `/app/app${appId}${pageIndex}.jpg`;
     return {
       src,
       alt: `${name} – Screen ${pageIndex}`,
@@ -210,7 +210,9 @@ export default function WorkSoftwareSection() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="space-y-3 text-center"
         >
-          <p className="kicker text-slate-500">{t.kicker}</p>
+          <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
+          {t.kicker}
+        </p>
           <h2
             id="software-title"
             className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900"
@@ -305,7 +307,7 @@ export default function WorkSoftwareSection() {
                   {activeGroup.name}
                 </span>
                 <span className="hidden sm:inline text-xs text-slate-500">
-                  4 screens · product UI
+                   · product UI
                 </span>
               </div>
               <div className="flex items-center gap-2">

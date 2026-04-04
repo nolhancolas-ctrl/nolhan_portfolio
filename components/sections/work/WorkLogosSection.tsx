@@ -101,7 +101,9 @@ export default function WorkLogosSection({ images }: Props) {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="space-y-3 text-center"
         >
-          <p className="kicker text-slate-500">{t.kicker}</p>
+          <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
+          {t.kicker}
+        </p>
           <h2
             id="logos-title"
             className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900"
