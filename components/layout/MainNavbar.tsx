@@ -6,7 +6,7 @@ import { useLang } from "@/hooks/useLang";
 type Lang = "en" | "fr";
 
 const LINKS = [
-  { key: "hero", href: "#hero", labelEn: "Intro", labelFr: "Intro" },
+  { key: "hero", href: "/#hero", labelEn: "Home", labelFr: "Accueil" },
   { key: "process", href: "#process", labelEn: "Process", labelFr: "Process" },
   { key: "work", href: "/work", labelEn: "Work", labelFr: "Projets" },
   { key: "pricing", href: "#pricing", labelEn: "Pricing", labelFr: "Tarifs" },
