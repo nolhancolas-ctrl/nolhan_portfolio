@@ -15,7 +15,7 @@ type HomeWorkPreviewSectionProps = {
 const APP_PREVIEWS: WorkImage[] = Array.from({ length: 6 }, (_, i) => {
   const appId = i + 1;
   return {
-    src: `/app/app${appId}1.png`,
+    src: `/app/app${appId}1.jpg`,
     alt: `App 0${appId} – main screen`,
   };
 });
