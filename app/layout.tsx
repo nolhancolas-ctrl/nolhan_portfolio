@@ -2,8 +2,6 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/mousewheel";
 import "lenis/dist/lenis.css";
-import "@fontsource-variable/manrope";
-import "@fontsource-variable/sora";
 import "./globals.css";
 import MotionProvider from "@/components/layout/MotionProvider";
 import type { Metadata } from "next";

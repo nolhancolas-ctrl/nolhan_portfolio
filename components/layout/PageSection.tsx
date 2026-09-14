@@ -18,10 +18,10 @@ export default function PageSection({
     target: ref,
     offset: ["start 92%", "end 8%"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.16, 0.78, 1], [0.06, 1, 1, 0.06]);
-  const y = useTransform(scrollYProgress, [0, 0.16, 0.78, 1], [120, 0, 0, -108]);
-  const scale = useTransform(scrollYProgress, [0, 0.16, 0.78, 1], [0.955, 1, 1, 0.965]);
-  const filter = useTransform(scrollYProgress, [0, 0.16, 0.78, 1], ["blur(18px)", "blur(0px)", "blur(0px)", "blur(16px)"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], [0.18, 1, 1, 0.18]);
+  const y = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], [72, 0, 0, -64]);
+  const scale = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], [0.985, 1, 1, 0.99]);
+  const filter = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], ["blur(10px)", "blur(0px)", "blur(0px)", "blur(8px)"]);
 
   return (
     <section

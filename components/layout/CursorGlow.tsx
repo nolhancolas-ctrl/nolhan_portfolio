@@ -58,12 +58,12 @@ export default function CursorGlow() {
     >
       <motion.svg
         className="cursor-chevron"
-        viewBox="0 0 16 18"
+        viewBox="0 0 20 23"
         fill="none"
         animate={{ scale: interactive ? 1.16 : 1 }}
         transition={{ type: "spring", stiffness: 420, damping: 28 }}
       >
-        <path d="M2.5 3.25 8 14.5l5.5-11.25" />
+        <path d="M2.05 1.75c-.72-.3-1.47.4-1.2 1.14l6.65 17.25c.28.73 1.3.77 1.64.07l2.18-4.55 4.66-2.05c.73-.32.72-1.36-.02-1.67L2.05 1.75Z" />
       </motion.svg>
     </motion.div>
   );
