@@ -18,16 +18,16 @@ type HomeWorkPreviewSectionProps = {
 const APP_PREVIEWS: WorkImage[] = Array.from({ length: 6 }, (_, i) => {
   const appId = i + 1;
   return {
-    src: `/app/app${appId}1.jpg`,
+    src: `/app/app${appId}1.webp`,
     alt: `App 0${appId} – main screen`,
   };
 });
 
-// Préviews landing : /public/landing/designed1.png → designed8.png
+// Préviews landing : /public/landing/designed1.webp → designed8.png
 const LANDING_PREVIEWS: WorkImage[] = Array.from({ length: 8 }, (_, i) => {
   const idx = i + 1;
   return {
-    src: `/landing/designed${idx}.png`,
+    src: `/landing/designed${idx}.webp`,
     alt: `Landing page ${idx}`,
   };
 });
@@ -118,7 +118,7 @@ export default function HomeWorkPreviewSection({
         <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-slate-500">
           {t.logosLabel}
         </p>
-        <div className="relative w-full max-w-sm mx-auto aspect-[9/16] overflow-hidden">
+        <div className="relative w-full max-w-sm mx-auto aspect-[3/4] md:aspect-[9/16] overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={logoIndex}
@@ -135,7 +135,7 @@ export default function HomeWorkPreviewSection({
                     alt={logo1.alt}
                     fill
                     className="object-cover"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
+                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
                   />
                 </div>
               )}
@@ -146,7 +146,7 @@ export default function HomeWorkPreviewSection({
                     alt={logo2.alt}
                     fill
                     className="object-cover"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
+                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
                   />
                 </div>
               )}
@@ -205,7 +205,7 @@ export default function HomeWorkPreviewSection({
         <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-slate-500">
           {t.landingLabel}
         </p>
-        <div className="relative w-full max-w-sm mx-auto aspect-[9/16] overflow-hidden">
+        <div className="relative w-full max-w-sm mx-auto aspect-[3/4] md:aspect-[9/16] overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={landingIndex}
@@ -222,7 +222,7 @@ export default function HomeWorkPreviewSection({
                     alt={currentLanding.alt}
                     fill
                     className="object-cover"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
+                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
                   />
                 </div>
               ) : (
@@ -280,7 +280,7 @@ export default function HomeWorkPreviewSection({
         <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-slate-500">
           {t.softwareLabel}
         </p>
-        <div className="relative w-full max-w-sm mx-auto aspect-[9/16] overflow-hidden rounded-2xl">
+        <div className="relative w-full max-w-sm mx-auto aspect-[3/4] md:aspect-[9/16] overflow-hidden rounded-2xl">
           <AnimatePresence mode="wait">
             <motion.div
               key={softwareIndex}
@@ -296,7 +296,7 @@ export default function HomeWorkPreviewSection({
                   alt={currentSoftware.alt}
                   fill
                   className="object-cover"
-                  sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
+                  sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
                 />
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-xs text-slate-400">
@@ -335,12 +335,6 @@ export default function HomeWorkPreviewSection({
           className="
             hidden
             md:block
-            rounded-[40px]
-            border border-slate-200/70
-            bg-white/70 backdrop-blur-xl
-            shadow-[0_20px_70px_rgba(15,23,42,0.16)]
-            px-4 sm:px-6 md:px-8
-            pt-6 sm:pt-7 pb-6 sm:pb-7
           "
         >
           <div
@@ -392,7 +386,7 @@ export default function HomeWorkPreviewSection({
             {loopColumns.map((key, idx) => (
               <div
                 key={`${key}-${idx}`}
-                className="shrink-0 w-[85%] max-w-xs"
+                className="home-work-mobile-card shrink-0 w-[82%] max-w-xs"
               >
                 {key === "logos" && <LogosCard />}
                 {key === "landing" && <LandingCard />}

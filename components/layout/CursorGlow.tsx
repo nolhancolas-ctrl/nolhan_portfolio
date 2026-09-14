@@ -84,7 +84,10 @@ export default function CursorGlow() {
     const observer = new MutationObserver(bindCalFrames);
     observer.observe(document.body, { childList: true, subtree: true });
 
-    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointermove", move, {
+      passive: true,
+      capture: true,
+    });
     root.addEventListener("pointerleave", hide);
     window.addEventListener("blur", hide);
 
@@ -95,7 +98,7 @@ export default function CursorGlow() {
         frame.removeEventListener("mouseleave", leaveCal);
       });
       root.classList.remove("cursor-enhanced", "cursor-over-cal");
-      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointermove", move, true);
       root.removeEventListener("pointerleave", hide);
       window.removeEventListener("blur", hide);
     };
