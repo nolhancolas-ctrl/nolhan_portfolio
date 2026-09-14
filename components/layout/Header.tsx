@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLang } from "@/hooks/useLang";
+import { SITE_NAME } from "@/lib/site";
 
 export default function Header() {
   // On part de true : au chargement, le hero est en vue, donc le header est caché
@@ -22,7 +23,10 @@ export default function Header() {
   // Observer la section #hero
   useEffect(() => {
     const hero = document.getElementById("hero");
-    if (!hero) return;
+    if (!hero) {
+      setIsHeroInView(false);
+      return;
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
@@ -65,18 +69,19 @@ export default function Header() {
         "
       >
         <a
-          href="#hero"
+          href="/#hero"
           className="
             px-5 py-2 rounded-full
             text-slate-900 font-medium 
             hover:bg-black hover:text-white transition
+            whitespace-nowrap
           "
         >
-          nolhan.dev
+          {SITE_NAME}
         </a>
 
         <a
-          href="#contact"
+          href="/#contact"
           className="
             px-5 py-2 rounded-full
             bg-white text-slate-900 font-medium 
@@ -90,3 +95,4 @@ export default function Header() {
     </header>
   );
 }
+

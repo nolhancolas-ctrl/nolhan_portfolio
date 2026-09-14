@@ -25,12 +25,15 @@ function Sculpture({ index }: { index: number }) {
   );
 }
 
-export default function SculptureScene({ index, compact }: { index: number; compact: boolean }) {
+export default function SculptureScene({ index, compact, onReady }: { index: number; compact: boolean; onReady?: () => void }) {
   const [lost, setLost] = useState(false);
   if (lost) return null;
   return (
-    <Canvas className="sculpture-canvas" dpr={compact ? 1 : 1.25} camera={{ position: [0, 0, 4.8], fov: 38 }} gl={{ antialias: !compact, alpha: true, powerPreference: "low-power" }}
-      onCreated={({ gl }) => gl.domElement.addEventListener("webglcontextlost", () => setLost(true), { once: true })}>
+    <Canvas className="sculpture-canvas" dpr={compact ? 1 : 1.25} camera={{ position: [0, 0, 4.8], fov: 38 }} gl={{ antialias: !compact, alpha: true, powerPreference: "high-performance" }}
+      onCreated={({ gl }) => {
+        gl.domElement.addEventListener("webglcontextlost", () => setLost(true), { once: true });
+        requestAnimationFrame(() => requestAnimationFrame(() => onReady?.()));
+      }}>
       <ambientLight intensity={0.5} />
       <directionalLight position={[3, 5, 4]} intensity={2} color="#f7edff" />
       <Sculpture index={index} />
@@ -42,3 +45,4 @@ export default function SculptureScene({ index, compact }: { index: number; comp
     </Canvas>
   );
 }
+

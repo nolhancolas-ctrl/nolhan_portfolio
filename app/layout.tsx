@@ -6,12 +6,15 @@ import "./globals.css";
 import MotionProvider from "@/components/layout/MotionProvider";
 import type { Metadata } from "next";
 import GradientBackground from "@/components/layout/visual/GradientBackground";
+import CursorGlow from "@/components/layout/CursorGlow";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { LangProvider } from "@/hooks/useLang"; // ⬅️ nouveau
+import { LangProvider } from "@/hooks/useLang";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Portfolio – Développeur Frontend",
+  metadataBase: new URL(SITE_URL),
+  title: `${SITE_NAME} – Développeur Frontend`,
   description: "Expériences Web créatives et interactives.",
 };
 
@@ -31,11 +34,9 @@ export default function RootLayout({
         {/* Toute l'app partage la même langue */}
         <LangProvider>
           <MotionProvider>
-          {/* Fond animé */}
           <GradientBackground />
-          {/* Header flottant */}
+          <CursorGlow />
           <Header />
-          {/* Contenu principal */}
           <main
             className="
               page-main
@@ -45,7 +46,6 @@ export default function RootLayout({
           >
             {children}
           </main>
-          {/* Footer */}
           <Footer className="mt-16" />
         </MotionProvider>
         </LangProvider>
@@ -53,3 +53,4 @@ export default function RootLayout({
     </html>
   );
 }
+
