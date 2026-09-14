@@ -1,4 +1,6 @@
 "use client";
+import { useAutoRail } from "@/hooks/useAutoRail";
+import { reveal } from "@/lib/motion";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
@@ -62,43 +64,14 @@ export default function WorkLogosSection({ images }: Props) {
   // on duplique les images pour permettre un loop fluide
   const loopImages = images.length ? [...images, ...images] : [];
 
-  useEffect(() => {
-    const el = railRef.current;
-    if (!el || !loopImages.length) return;
-
-    let animationFrame: number;
-    let lastTime = performance.now();
-    const speed = 30; // px/s (même dynamique que landing/software)
-
-    const step = (time: number) => {
-      const dt = (time - lastTime) / 1000;
-      lastTime = time;
-      const node = railRef.current;
-      if (!node) return;
-
-      node.scrollLeft += speed * dt;
-
-      const halfWidth = node.scrollWidth / 2;
-      if (node.scrollLeft >= halfWidth) {
-        node.scrollLeft = 0;
-      }
-
-      animationFrame = requestAnimationFrame(step);
-    };
-
-    animationFrame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [loopImages.length]);
+  useAutoRail(railRef, loopImages.length);
 
   return (
     <section aria-labelledby="logos-title">
       <div className="space-y-8">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          {...reveal}
           className="space-y-3 text-center"
         >
           <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
@@ -114,10 +87,7 @@ export default function WorkLogosSection({ images }: Props) {
 
         {/* 💻 Desktop / tablette : grille de logos 1:1 */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          {...reveal}
           className="
             hidden
             sm:grid gap-5
@@ -162,14 +132,12 @@ export default function WorkLogosSection({ images }: Props) {
 
         {/* 📱 Mobile : rail horizontal auto-scroll, 2 lignes de logos */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          {...reveal}
           className="sm:hidden px-4"
         >
           <div
             ref={railRef}
+            data-lenis-prevent
             className="
               overflow-x-auto
               no-scrollbar

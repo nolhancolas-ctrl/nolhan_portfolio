@@ -1,4 +1,6 @@
 "use client";
+import { useAutoRail } from "@/hooks/useAutoRail";
+import { reveal } from "@/lib/motion";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
@@ -95,17 +97,6 @@ export default function WorkSoftwareSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex, groups.length]);
 
-  // Précharger les 24 images pour éviter les flashs
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    SOFTWARE_GROUPS.forEach((group) => {
-      group.pages.forEach((page) => {
-        const img = new window.Image();
-        img.src = page.src;
-      });
-    });
-  }, []);
-
   // ---------- Card réutilisable (grid + mobile) ----------
   const renderCard = (group: SoftwareGroup, index: number) => (
     <motion.article
@@ -171,43 +162,14 @@ export default function WorkSoftwareSection() {
   // on duplique les groupes pour permettre un loop fluide
   const loopGroups = groups.length ? [...groups, ...groups] : [];
 
-  useEffect(() => {
-    const el = railRef.current;
-    if (!el || !loopGroups.length) return;
-
-    let animationFrame: number;
-    let lastTime = performance.now();
-    const speed = 30; // px/s, comme pour les landing pages
-
-    const step = (time: number) => {
-      const dt = (time - lastTime) / 1000;
-      lastTime = time;
-      const node = railRef.current;
-      if (!node) return;
-
-      node.scrollLeft += speed * dt;
-
-      const halfWidth = node.scrollWidth / 2;
-      if (node.scrollLeft >= halfWidth) {
-        node.scrollLeft = 0;
-      }
-
-      animationFrame = requestAnimationFrame(step);
-    };
-
-    animationFrame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [loopGroups.length]);
+  useAutoRail(railRef, loopGroups.length);
 
   return (
     <section aria-labelledby="software-title">
       <div className="space-y-8">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          {...reveal}
           className="space-y-3 text-center"
         >
           <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
@@ -223,10 +185,7 @@ export default function WorkSoftwareSection() {
 
         {/* 💻 Desktop / tablette : grille */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          {...reveal}
           className="
             hidden
             sm:grid gap-5
@@ -239,14 +198,12 @@ export default function WorkSoftwareSection() {
 
         {/* 📱 Mobile : rail horizontal scrollable + auto-défilement */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          {...reveal}
           className="sm:hidden px-4"
         >
           <div
             ref={railRef}
+            data-lenis-prevent
             className="
               flex gap-4
               overflow-x-auto

@@ -7,10 +7,10 @@ type Lang = "en" | "fr";
 
 const LINKS = [
   { key: "hero", href: "/#hero", labelEn: "Home", labelFr: "Accueil" },
-  { key: "process", href: "#process", labelEn: "Process", labelFr: "Process" },
+  { key: "process", href: "/#process", labelEn: "Process", labelFr: "Process" },
   { key: "work", href: "/work", labelEn: "Work", labelFr: "Projets" },
-  { key: "pricing", href: "#pricing", labelEn: "Pricing", labelFr: "Tarifs" },
-  { key: "faq", href: "#faq", labelEn: "FAQ", labelFr: "FAQ" },
+  { key: "pricing", href: "/#pricing", labelEn: "Pricing", labelFr: "Tarifs" },
+  { key: "faq", href: "/#faq", labelEn: "FAQ", labelFr: "FAQ" },
   { key: "contact", href: "#contact", labelEn: "Contact", labelFr: "Contact" },
 ];
 

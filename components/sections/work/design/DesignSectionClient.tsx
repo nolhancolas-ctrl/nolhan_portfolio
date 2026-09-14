@@ -1,4 +1,5 @@
 "use client";
+import { useAutoRail } from "@/hooks/useAutoRail";
 import Image from "next/image";
 import { useLang } from "@/hooks/useLang";
 import { useState, useEffect, useRef } from "react";
@@ -65,36 +66,7 @@ export default function DesignSectionClient({ images }: DesignSectionClientProps
   // on duplique les images pour permettre un loop fluide
   const loopImages = images.length ? [...images, ...images] : [];
 
-  useEffect(() => {
-    const el = railRef.current;
-    if (!el || !loopImages.length) return;
-
-    let animationFrame: number;
-    let lastTime = performance.now();
-    const speed = 30; // px par seconde (à ajuster si tu veux)
-
-    const step = (time: number) => {
-      const dt = (time - lastTime) / 1000;
-      lastTime = time;
-
-      // protection si l'élément a disparu
-      if (!el) return;
-
-      el.scrollLeft += speed * dt;
-
-      // quand on a parcouru la moitié du contenu (puisqu'on a doublé le tableau),
-      // on revient au début : contenu identique → petit "reset" quasi invisible.
-      const halfWidth = el.scrollWidth / 2;
-      if (el.scrollLeft >= halfWidth) {
-        el.scrollLeft = 0;
-      }
-
-      animationFrame = requestAnimationFrame(step);
-    };
-
-    animationFrame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [loopImages.length]);
+  useAutoRail(railRef, loopImages.length);
 
   // -------- Layout asymétrique (desktop) --------
   const layoutClasses = [
@@ -171,6 +143,7 @@ export default function DesignSectionClient({ images }: DesignSectionClientProps
       <div className="sm:hidden px-4">
         <div
           ref={railRef}
+            data-lenis-prevent
           className="
             flex gap-4
             overflow-x-auto

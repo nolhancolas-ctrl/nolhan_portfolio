@@ -1,7 +1,9 @@
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/mousewheel";
+import "lenis/dist/lenis.css";
 import "./globals.css";
+import MotionProvider from "@/components/layout/MotionProvider";
 import type { Metadata } from "next";
 import GradientBackground from "@/components/layout/visual/GradientBackground";
 import Header from "@/components/layout/Header";
@@ -19,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body
+    <html lang="en">
+      <body id="page-top"
         className="
           relative min-h-screen antialiased
           bg-transparent selection:bg-black/10
@@ -28,6 +30,7 @@ export default function RootLayout({
       >
         {/* Toute l'app partage la même langue */}
         <LangProvider>
+          <MotionProvider>
           {/* Fond animé */}
           <GradientBackground />
           {/* Header flottant */}
@@ -44,6 +47,7 @@ export default function RootLayout({
           </main>
           {/* Footer */}
           <Footer className="mt-16" />
+        </MotionProvider>
         </LangProvider>
       </body>
     </html>

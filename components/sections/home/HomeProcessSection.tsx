@@ -1,4 +1,5 @@
 "use client";
+import { reveal } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 
@@ -64,10 +65,7 @@ export default function ProcessSection() {
     <section aria-labelledby="process-title">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        {...reveal}
         className="space-y-4 text-center mb-10"
       >
         <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
@@ -110,31 +108,17 @@ export default function ProcessSection() {
               >
                 <motion.div
                   className="
-                    h-full
+                    process-card h-full
                     rounded-3xl border border-slate-200/80 bg-white/80
                     backdrop-blur-md shadow-sm
                     px-4 py-5 md:px-5 md:py-6
                     flex flex-col gap-3
                   "
-                  // flottement en boucle : elles se soulèvent une à une
-                  animate={{
-                    y: [0, -8, 0],
-                    boxShadow: [
-                      "0 12px 25px rgba(15,23,42,0.05)",
-                      "0 20px 40px rgba(15,23,42,0.16)",
-                      "0 12px 25px rgba(15,23,42,0.05)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 4,
-                    repeat: Infinity,
-                    delay: index * 0.5,
-                    ease: "easeInOut",
-                  }}
                   whileHover={{
-                    y: -14,
-                    boxShadow: "0 26px 50px rgba(15,23,42,0.28)",
-                    transition: { duration: 0.22 },
+                    y: -7,
+                    rotate: index % 2 === 0 ? -1 : 1,
+                    boxShadow: "0 20px 38px rgba(91,65,153,0.12)",
+                    transition: { type: "spring", stiffness: 280, damping: 22 },
                   }}
                 >
                   <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500 flex items-center gap-2">

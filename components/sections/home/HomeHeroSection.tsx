@@ -1,11 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 
 export default function HeroSection() {
 
   const { lang } = useLang();
+  const reduced = useReducedMotion();
   
   const t = {
     en: {
@@ -25,7 +26,7 @@ export default function HeroSection() {
   }[lang];
 
   return (
-    <section className="relative w-full flex items-center justify-center pb-20 px-6">
+    <section className="hero-content relative w-full flex items-center justify-center pb-20 px-6">
       <div className="max-w-3xl mx-auto text-center px-6">
         {/* Pré-titre */}
         <motion.p
@@ -39,9 +40,9 @@ export default function HeroSection() {
 
         {/* Titre */}
         <motion.h1
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          initial={{ opacity: 0, y: reduced ? 0 : 28, filter: reduced ? "none" : "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
           className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6"
         >
           {lang === "en" ? "I design and build" : "Je conçois et réalise"}
@@ -68,17 +69,17 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.45, duration: 0.7 }}
-          className="flex items-center justify-center gap-4 mb-14"
+          className="flex flex-wrap items-center justify-center gap-4 mb-14"
         >
           <a
             href="/work"
-            className="px-6 py-3 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition whitespace-nowrap"
+            className="hero-cta px-6 py-3 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition whitespace-nowrap"
           >
             {t.ctaProjects}
           </a>
           <a
             href="#contact"
-            className="px-6 py-3 rounded-full border border-slate-300 font-medium hover:bg-slate-100 transition whitespace-nowrap"
+            className="hero-cta px-6 py-3 rounded-full border border-slate-300 font-medium hover:bg-slate-100 transition whitespace-nowrap"
           >
             {t.ctaContact}
           </a>

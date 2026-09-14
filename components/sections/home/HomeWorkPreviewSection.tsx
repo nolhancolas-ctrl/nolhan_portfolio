@@ -1,4 +1,7 @@
 "use client";
+import { useVisualPreferences } from "@/hooks/useVisualPreferences";
+import { useAutoRail } from "@/hooks/useAutoRail";
+import { reveal } from "@/lib/motion";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
@@ -35,6 +38,8 @@ export default function HomeWorkPreviewSection({
   landings, // eslint-disable-line @typescript-eslint/no-unused-vars
 }: HomeWorkPreviewSectionProps) {
   const { lang } = useLang();
+  const { reducedMotion, visible } = useVisualPreferences();
+  const autoplay = visible && !reducedMotion;
 
   const t = {
     en: {
@@ -59,25 +64,12 @@ export default function HomeWorkPreviewSection({
   const landingImages = LANDING_PREVIEWS;
   const softwareImages = APP_PREVIEWS;
 
-  // ----- Préchargement de toutes les images -----
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const allSrcs = [
-      ...logoImages.map((i) => i.src),
-      ...landingImages.map((i) => i.src),
-      ...softwareImages.map((i) => i.src),
-    ];
-    allSrcs.forEach((src) => {
-      const img = new window.Image();
-      img.src = src;
-    });
-  }, [logoImages, landingImages, softwareImages]);
-
   // Effet hover commun pour les 3 cartes (desktop)
   const hoverCard = {
-    y: -14,
-    boxShadow: "0 26px 50px rgba(15,23,42,0.28)",
-    transition: { duration: 0.22 },
+    y: -8,
+    scale: 1.01,
+    boxShadow: "0 24px 48px rgba(70,49,110,0.16)",
+    transition: { type: "spring" as const, stiffness: 240, damping: 24 },
   };
 
   // ----- Auto-carrousel MOBILE pour les 3 colonnes -----
@@ -85,46 +77,21 @@ export default function HomeWorkPreviewSection({
   const columnKeys = ["logos", "landing", "software"] as const;
   const loopColumns = [...columnKeys, ...columnKeys]; // duplication pour loop fluide
 
-  useEffect(() => {
-    const el = mobileRailRef.current;
-    if (!el || !loopColumns.length) return;
-
-    let frame: number;
-    let lastTime = performance.now();
-    const speed = 35; // px/s, cohérent avec la section Landing
-
-    const step = (time: number) => {
-      const dt = (time - lastTime) / 1000;
-      lastTime = time;
-      if (!el) return;
-
-      el.scrollLeft += speed * dt;
-
-      const halfWidth = el.scrollWidth / 2;
-      if (el.scrollLeft >= halfWidth) {
-        el.scrollLeft = 0;
-      }
-      frame = requestAnimationFrame(step);
-    };
-
-    frame = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(frame);
-    // loopColumns est constant, pas besoin de dépendance
-  }, []);
+  useAutoRail(mobileRailRef, loopColumns.length);
 
   // ----- LogosCard : timer local (toutes les 6s, pas de décalage) -----
   const LogosCard = () => {
     const [logoIndex, setLogoIndex] = useState(0);
 
     useEffect(() => {
-      if (logoImages.length <= 1) return;
+      if (!autoplay || logoImages.length <= 1) return;
       const interval = window.setInterval(() => {
         setLogoIndex((prev) =>
           logoImages.length ? (prev + 2) % logoImages.length : prev,
         );
       }, 6000);
       return () => clearInterval(interval);
-    }, [logoImages.length]);
+    }, [logoImages.length, autoplay]);
 
     const logo1 =
       logoImages.length > 0
@@ -167,7 +134,6 @@ export default function HomeWorkPreviewSection({
                     src={logo1.src}
                     alt={logo1.alt}
                     fill
-                    priority
                     className="object-cover"
                     sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
                   />
@@ -179,7 +145,6 @@ export default function HomeWorkPreviewSection({
                     src={logo2.src}
                     alt={logo2.alt}
                     fill
-                    priority
                     className="object-cover"
                     sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
                   />
@@ -202,7 +167,7 @@ export default function HomeWorkPreviewSection({
     const [landingIndex, setLandingIndex] = useState(0);
 
     useEffect(() => {
-      if (!landingImages.length) return;
+      if (!autoplay || !landingImages.length) return;
 
       let interval: number | undefined;
       const timeout = window.setTimeout(() => {
@@ -217,7 +182,7 @@ export default function HomeWorkPreviewSection({
         clearTimeout(timeout);
         if (interval) clearInterval(interval);
       };
-    }, [landingImages.length]);
+    }, [landingImages.length, autoplay]);
 
     const currentLanding =
       landingImages.length > 0
@@ -256,7 +221,6 @@ export default function HomeWorkPreviewSection({
                     src={currentLanding.src}
                     alt={currentLanding.alt}
                     fill
-                    priority
                     className="object-cover"
                     sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
                   />
@@ -278,7 +242,7 @@ export default function HomeWorkPreviewSection({
     const [softwareIndex, setSoftwareIndex] = useState(0);
 
     useEffect(() => {
-      if (!softwareImages.length) return;
+      if (!autoplay || !softwareImages.length) return;
 
       let interval: number | undefined;
       const timeout = window.setTimeout(() => {
@@ -293,7 +257,7 @@ export default function HomeWorkPreviewSection({
         clearTimeout(timeout);
         if (interval) clearInterval(interval);
       };
-    }, [softwareImages.length]);
+    }, [softwareImages.length, autoplay]);
 
     const currentSoftware =
       softwareImages.length > 0
@@ -331,7 +295,6 @@ export default function HomeWorkPreviewSection({
                   src={currentSoftware.src}
                   alt={currentSoftware.alt}
                   fill
-                  priority
                   className="object-cover"
                   sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 100vw"
                 />
@@ -352,10 +315,7 @@ export default function HomeWorkPreviewSection({
       <div className="space-y-8">
         {/* Header (simple : kicker + titre) */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          {...reveal}
           className="max-w-3xl mx-auto text-center space-y-4"
         >
           <p className="text-xs font-medium tracking-[0.25em] uppercase text-slate-500">
@@ -371,10 +331,7 @@ export default function HomeWorkPreviewSection({
 
         {/* 💻 Desktop / tablette : grande carte avec 3 colonnes */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          {...reveal}
           className="
             hidden
             md:block
@@ -419,14 +376,12 @@ export default function HomeWorkPreviewSection({
 
         {/* 📱 Mobile : carrousel horizontal des 3 colonnes */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          {...reveal}
           className="md:hidden"
         >
           <div
             ref={mobileRailRef}
+            data-lenis-prevent
             className="
               flex gap-4
               overflow-x-auto

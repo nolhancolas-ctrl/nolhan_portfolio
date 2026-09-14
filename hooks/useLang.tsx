@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useMemo,
+  useEffect,
   type ReactNode,
 } from "react";
 
@@ -19,6 +20,8 @@ const LangContext = createContext<LangContextValue | undefined>(undefined);
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("en");
+
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
 
   const toggleLang = () => {
     setLang((prev) => (prev === "en" ? "fr" : "en"));
