@@ -118,8 +118,15 @@
 .cursor-chevron { position: absolute; left: 0; top: 0; width: 19px; height: 19px; overflow: visible; transform: translate(-17%, -13%); filter: drop-shadow(0 0 1px rgba(255,255,255,1)) drop-shadow(0 0 4px rgba(255,255,255,.92)) drop-shadow(0 0 7px rgba(129,112,193,.35)); }
 .cursor-chevron path { fill: #0d0d12; stroke: rgba(255,255,255,.82); stroke-width: 1.15; stroke-linejoin: round; }
 @media (pointer: fine) {
-  html.cursor-enhanced, html.cursor-enhanced * { cursor: none !important; }
-  html.cursor-enhanced #portfolio-cal { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 20 20'%3E%3Cpath d='M2.1 1.85c-.68-.31-1.42.34-1.19 1.06l4.86 15.02c.24.75 1.27.85 1.66.16l3.04-5.35 5.92-2.15c.76-.28.82-1.33.1-1.69L2.1 1.85Z' fill='%230d0d12' stroke='white' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, auto !important; }
+  html.cursor-enhanced,
+  html.cursor-enhanced * {
+    cursor: none !important;
+  }
+
+  html.cursor-enhanced.cursor-over-cal .cal-frame,
+  html.cursor-enhanced.cursor-over-cal .cal-frame * {
+    cursor: auto !important;
+  }
 }
 .modern-footer { position: relative; z-index: 40; overflow: hidden; background: #111219; color: #f5f3ff; border-radius: 40px 40px 0 0; }
 .footer-inner { max-width: 1200px; margin: 0 auto; padding: 52px 48px 48px; display: grid; grid-template-columns: minmax(240px,.8fr) minmax(420px,1.2fr); align-items: stretch; gap: 72px; }

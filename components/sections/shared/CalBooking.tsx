@@ -6,8 +6,6 @@ import type { Lang } from "@/hooks/useLang";
 
 type DimensionEvent = CustomEvent<{ data?: { iframeHeight?: number } }>;
 
-const calCursor = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 20 20'%3E%3Cpath d='M2.1 1.85c-.68-.31-1.42.34-1.19 1.06l4.86 15.02c.24.75 1.27.85 1.66.16l3.04-5.35 5.92-2.15c.76-.28.82-1.33.1-1.69L2.1 1.85Z' fill='%230d0d12' stroke='white' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, auto`;
-
 export default function CalBooking({ lang }: { lang: Lang }) {
   const [ready, setReady] = useState(false);
   const [compact, setCompact] = useState(false);
@@ -37,8 +35,8 @@ export default function CalBooking({ lang }: { lang: Lang }) {
       .then((cal) => {
         if (cancelled) return;
         calApi = cal;
-        const embeddedBodyStyle: CSSProperties = { background: "transparent", cursor: calCursor };
-        const embeddedDateStyle: CSSProperties = { background: "#ebe8f4", color: "#17151f", cursor: calCursor };
+        const embeddedBodyStyle: CSSProperties = { background: "transparent" };
+        const embeddedDateStyle: CSSProperties = { background: "#ebe8f4", color: "#17151f" };
         cal("ui", {
           theme: "light",
           cssVarsPerTheme: {

@@ -14,6 +14,7 @@ export default function CursorGlow() {
   const [visible, setVisible] = useState(false);
   const [interactive, setInteractive] = useState(false);
   const [enabled, setEnabled] = useState(false);
+  const [overCal, setOverCal] = useState(false);
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer: fine)");
@@ -25,23 +26,77 @@ export default function CursorGlow() {
 
   useEffect(() => {
     if (!enabled) return;
-    document.documentElement.classList.add("cursor-enhanced");
+
+    const root = document.documentElement;
+    const boundCalFrames = new Set<HTMLElement>();
+
+    root.classList.add("cursor-enhanced");
+
+    const enterCal = () => {
+      root.classList.add("cursor-over-cal");
+      setOverCal(true);
+      setVisible(false);
+      setInteractive(false);
+    };
+
+    const leaveCal = (event: MouseEvent) => {
+      pointerX.set(event.clientX);
+      pointerY.set(event.clientY);
+      root.classList.remove("cursor-over-cal");
+      setOverCal(false);
+      setVisible(true);
+      setInteractive(false);
+    };
+
+    const bindCalFrames = () => {
+      document.querySelectorAll<HTMLElement>(".cal-frame").forEach((frame) => {
+        if (boundCalFrames.has(frame)) return;
+        frame.addEventListener("mouseenter", enterCal);
+        frame.addEventListener("mouseleave", leaveCal);
+        boundCalFrames.add(frame);
+      });
+    };
 
     const move = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+
+      if (target?.closest(".cal-frame")) {
+        enterCal();
+        return;
+      }
+
+      root.classList.remove("cursor-over-cal");
+      setOverCal(false);
       pointerX.set(event.clientX);
       pointerY.set(event.clientY);
       setVisible(true);
-      setInteractive(event.target instanceof Element && Boolean(event.target.closest(interactiveSelector)));
+      setInteractive(Boolean(target?.closest(interactiveSelector)));
     };
-    const hide = () => setVisible(false);
+
+    const hide = () => {
+      setVisible(false);
+      setOverCal(false);
+      root.classList.remove("cursor-over-cal");
+    };
+
+    bindCalFrames();
+
+    const observer = new MutationObserver(bindCalFrames);
+    observer.observe(document.body, { childList: true, subtree: true });
 
     window.addEventListener("pointermove", move, { passive: true });
-    document.documentElement.addEventListener("pointerleave", hide);
+    root.addEventListener("pointerleave", hide);
     window.addEventListener("blur", hide);
+
     return () => {
-      document.documentElement.classList.remove("cursor-enhanced");
+      observer.disconnect();
+      boundCalFrames.forEach((frame) => {
+        frame.removeEventListener("mouseenter", enterCal);
+        frame.removeEventListener("mouseleave", leaveCal);
+      });
+      root.classList.remove("cursor-enhanced", "cursor-over-cal");
       window.removeEventListener("pointermove", move);
-      document.documentElement.removeEventListener("pointerleave", hide);
+      root.removeEventListener("pointerleave", hide);
       window.removeEventListener("blur", hide);
     };
   }, [enabled, pointerX, pointerY]);
@@ -53,7 +108,7 @@ export default function CursorGlow() {
       aria-hidden="true"
       className="cursor-glow-layer"
       style={{ x, y }}
-      animate={{ opacity: visible ? 1 : 0 }}
+      animate={{ opacity: visible && !overCal ? 1 : 0 }}
       transition={{ duration: 0.18 }}
     >
       <motion.svg
