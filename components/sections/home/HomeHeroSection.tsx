@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
+import { SITE_NAME } from "@/lib/site";
 
 export default function HeroSection() {
 
@@ -10,14 +11,14 @@ export default function HeroSection() {
   
   const t = {
     en: {
-      pretitre: "nolhan.dev • Creative developer",
+      pretitre: `${SITE_NAME} • Creative developer`,
       subtitle:
         "Modern interfaces, smooth micro-interactions and careful details for real products.",
       ctaProjects: "See my projects",
       ctaContact: "Contact me",
     },
     fr: {
-      pretitre: "nolhan.dev • Développeur créatif",
+      pretitre: `${SITE_NAME} • Développeur créatif`,
       subtitle:
         "Interfaces modernes, micro-interactions fluides et souci du détail au service de projets concrets.",
       ctaProjects: "Voir mes projets",
@@ -88,3 +89,4 @@ export default function HeroSection() {
     </section>
   );
 }
+
