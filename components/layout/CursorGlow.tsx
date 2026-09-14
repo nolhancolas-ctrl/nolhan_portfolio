@@ -9,8 +9,8 @@ export default function CursorGlow() {
   const reducedMotion = useReducedMotion();
   const pointerX = useMotionValue(-100);
   const pointerY = useMotionValue(-100);
-  const x = useSpring(pointerX, { stiffness: 560, damping: 42, mass: 0.22 });
-  const y = useSpring(pointerY, { stiffness: 560, damping: 42, mass: 0.22 });
+  const x = useSpring(pointerX, { stiffness: 780, damping: 48, mass: 0.12 });
+  const y = useSpring(pointerY, { stiffness: 780, damping: 48, mass: 0.12 });
   const [visible, setVisible] = useState(false);
   const [interactive, setInteractive] = useState(false);
   const [enabled, setEnabled] = useState(false);
@@ -56,16 +56,15 @@ export default function CursorGlow() {
       animate={{ opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.18 }}
     >
-      <motion.span
-        className="cursor-glow-halo"
-        animate={{ scale: interactive ? 1.45 : 1 }}
-        transition={{ type: "spring", stiffness: 320, damping: 24 }}
-      />
-      <motion.span
-        className="cursor-glow-dot"
-        animate={{ scale: interactive ? 0.65 : 1 }}
-        transition={{ duration: 0.16 }}
-      />
+      <motion.svg
+        className="cursor-chevron"
+        viewBox="0 0 16 18"
+        fill="none"
+        animate={{ scale: interactive ? 1.16 : 1 }}
+        transition={{ type: "spring", stiffness: 420, damping: 28 }}
+      >
+        <path d="M2.5 3.25 8 14.5l5.5-11.25" />
+      </motion.svg>
     </motion.div>
   );
 }

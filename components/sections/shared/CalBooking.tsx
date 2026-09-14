@@ -6,6 +6,15 @@ import type { Lang } from "@/hooks/useLang";
 
 export default function CalBooking({ lang }: { lang: Lang }) {
   const [ready, setReady] = useState(false);
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const sync = () => setCompact(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,7 +35,7 @@ export default function CalBooking({ lang }: { lang: Lang }) {
             body: { background: "transparent" },
             enabledDateButton: { background: "#ebe8f4", color: "#17151f" },
           },
-          hideEventTypeDetails: false,
+          hideEventTypeDetails: compact,
           layout: "month_view",
         });
         cal("on", { action: "linkReady", callback: markReady });
@@ -41,10 +50,10 @@ export default function CalBooking({ lang }: { lang: Lang }) {
         calApi("off", { action: "__dimensionChanged", callback: markReady });
       }
     };
-  }, []);
+  }, [compact]);
 
   return (
-    <div className={`cal-frame${ready ? " is-ready" : ""}`}>
+    <div className={`cal-frame${ready ? " is-ready" : ""}${compact ? " is-compact" : ""}`}>
       <div className="cal-loader" aria-hidden="true">
         <span />
         <span />
