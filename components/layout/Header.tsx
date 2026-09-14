@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLang } from "@/hooks/useLang";
 
@@ -7,6 +8,7 @@ export default function Header() {
   const [isHeroInView, setIsHeroInView] = useState(true);
 
   const { lang } = useLang();
+  const pathname = usePathname();
 
   const t = {
     en: {
@@ -32,7 +34,7 @@ export default function Header() {
     );
     observer.observe(hero);
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   // Visible quand le hero n’est plus dans le viewport
   const visible = !isHeroInView;

@@ -1,4 +1,5 @@
 "use client";
+import { reveal } from "@/lib/motion";
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -79,10 +80,7 @@ export default function FaqSection() {
     <section aria-labelledby="faq-title" className="relative">
       {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        {...reveal}
         className="space-y-4 text-center mb-10"
       >
         <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
@@ -127,6 +125,8 @@ export default function FaqSection() {
                   hover:bg-white/80 transition
                 "
                 aria-expanded={isOpen}
+                aria-controls={`faq-answer-${item.id}`}
+                id={`faq-question-${item.id}`}
               >
                 <div className="flex items-start gap-3">
                   <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">
@@ -138,14 +138,14 @@ export default function FaqSection() {
                 </div>
                 <motion.span
                   aria-hidden
-                  animate={{ rotate: isOpen ? 90 : 0 }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  animate={{ rotate: isOpen ? 45 : 0 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="
                     inline-flex h-6 w-6 items-center justify-center
                     rounded-full border border-slate-300 bg-white text-xs text-slate-700
                   "
                 >
-                  ▸
+                  +
                 </motion.span>
               </button>
 
@@ -153,6 +153,9 @@ export default function FaqSection() {
                 {isOpen && (
                   <motion.div
                     key="content"
+                    id={`faq-answer-${item.id}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${item.id}`}
                     initial="collapsed"
                     animate="open"
                     exit="collapsed"

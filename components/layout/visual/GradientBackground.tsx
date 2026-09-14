@@ -1,16 +1,19 @@
+"use client";
+import dynamic from "next/dynamic";
+import { useVisualPreferences } from "@/hooks/useVisualPreferences";
+import WebGLBoundary from "./WebGLBoundary";
+
+const GradientScene = dynamic(() => import("./GradientScene"), { ssr: false });
+
 export default function GradientBackground() {
+  const { ready, reducedMotion, visible, compact } = useVisualPreferences();
   return (
-    <div
-      aria-hidden
-      className="
-        fixed inset-0 -z-50 overflow-hidden
-        bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.4),rgba(240,240,240,0.25))]
-      "
-    >
-      {/* BLOBS PASTELS VIFS PILOTÉS PAR CSS VARS */}
-      <div className="blob blob-1 mix-blend-screen animate-blob-1" />
-      <div className="blob blob-2 mix-blend-screen animate-blob-2" />
-      <div className="blob blob-3 mix-blend-screen animate-blob-3" />
+    <div className="portfolio-background" aria-hidden="true">
+      <div className="portfolio-background-fallback" />
+      {ready && !reducedMotion && (
+        <WebGLBoundary><GradientScene active={visible} compact={compact} /></WebGLBoundary>
+      )}
+      <div className="portfolio-background-veil" />
     </div>
   );
 }

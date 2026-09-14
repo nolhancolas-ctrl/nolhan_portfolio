@@ -11,7 +11,7 @@ export default function PageSection({
     <section
       id={id}
       className={`
-        w-full 
+        page-section w-full
         max-w-5xl 
         mx-auto 
         px-6 

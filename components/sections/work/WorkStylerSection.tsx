@@ -1,4 +1,5 @@
 "use client";
+import { reveal } from "@/lib/motion";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -149,10 +150,7 @@ export default function StyleCarouselSection() {
     <section aria-labelledby="style-title" className="relative" id="styles">
       {/* Titre */}
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        {...reveal}
         className="space-y-4 text-center mb-10"
       >
         <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
