@@ -12,11 +12,9 @@ export default function GradientBackground() {
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
   const rawRotate = useMotionValue(0);
-  const rawScale = useMotionValue(1.04);
   const x = useSpring(rawX, { stiffness: 115, damping: 24, mass: 0.55 });
   const y = useSpring(rawY, { stiffness: 115, damping: 24, mass: 0.55 });
   const rotate = useSpring(rawRotate, { stiffness: 100, damping: 26, mass: 0.6 });
-  const scale = useSpring(rawScale, { stiffness: 100, damping: 26, mass: 0.6 });
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -35,11 +33,9 @@ export default function GradientBackground() {
       const rect = section.getBoundingClientRect();
       const progress = Math.max(0, Math.min(1, (center - rect.top) / Math.max(rect.height, 1)));
       const wave = Math.sin(progress * Math.PI * 2);
-      const focus = Math.sin(progress * Math.PI);
       rawX.set(wave * (compact ? 7 : 15));
       rawY.set((progress - 0.5) * (compact ? -16 : -32));
       rawRotate.set(wave * (compact ? 0.25 : 0.55));
-      rawScale.set(1.08 - focus * (compact ? 0.025 : 0.045));
     };
     const requestUpdate = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
@@ -50,13 +46,13 @@ export default function GradientBackground() {
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
     };
-  }, [compact, rawRotate, rawScale, rawX, rawY, reducedMotion]);
+  }, [compact, rawRotate, rawX, rawY, reducedMotion]);
 
   return (
     <div className="portfolio-background" aria-hidden="true">
       <div className="portfolio-background-fallback" />
       {ready && !reducedMotion && (
-        <motion.div className="portfolio-shader-motion" style={{ x, y, rotate, scale }}>
+        <motion.div className="portfolio-shader-motion" style={{ x, y, rotate }}>
           <WebGLBoundary><GradientScene active={visible} compact={compact} /></WebGLBoundary>
         </motion.div>
       )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
 export default function PageSection({
@@ -18,14 +18,10 @@ export default function PageSection({
     target: ref,
     offset: ["start 92%", "end 8%"],
   });
-  const rawOpacity = useTransform(scrollYProgress, [0, 0.17, 0.29, 0.76, 0.91, 1], [0.03, 0.13, 1, 1, 0.28, 0.03]);
-  const rawY = useTransform(scrollYProgress, [0, 0.17, 0.29, 0.76, 0.91, 1], [96, 70, 0, 0, -48, -78]);
-  const rawScale = useTransform(scrollYProgress, [0, 0.17, 0.29, 0.76, 0.91, 1], [0.9, 0.94, 1, 1, 0.94, 0.9]);
-  const filter = useTransform(scrollYProgress, [0, 0.17, 0.29, 0.76, 0.91, 1], ["blur(13px)", "blur(10px)", "blur(0px)", "blur(0px)", "blur(7px)", "blur(11px)"]);
-  const spring = { stiffness: 180, damping: 28, mass: 0.32 };
-  const opacity = useSpring(rawOpacity, spring);
-  const y = useSpring(rawY, spring);
-  const scale = useSpring(rawScale, spring);
+  const opacity = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], [0.18, 1, 1, 0.18]);
+  const y = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], [72, 0, 0, -64]);
+  const scale = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], [0.985, 1, 1, 0.99]);
+  const filter = useTransform(scrollYProgress, [0, 0.24, 0.76, 1], ["blur(10px)", "blur(0px)", "blur(0px)", "blur(8px)"]);
 
   return (
     <section
