@@ -2,6 +2,8 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/mousewheel";
 import "lenis/dist/lenis.css";
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/counter.css";
 import "./globals.css";
 import MotionProvider from "@/components/layout/MotionProvider";
 import type { Metadata } from "next";

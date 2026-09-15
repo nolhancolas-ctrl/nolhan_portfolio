@@ -1,10 +1,12 @@
 "use client";
+
+import WorkLightbox from "@/components/work/WorkLightbox";
 import { useAutoRail } from "@/hooks/useAutoRail";
-import { reveal } from "@/lib/motion";
-import Image from "next/image";
-import { motion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
-import { useEffect, useState, useRef } from "react";
+import { reveal } from "@/lib/motion";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import { useRef, useState } from "react";
 
 type SoftwarePage = {
   src: string;
@@ -12,169 +14,129 @@ type SoftwarePage = {
 };
 
 type SoftwareGroup = {
-  id: number; // 1..6
+  id: number;
   name: string;
-  pages: SoftwarePage[]; // 4 pages
+  pages: SoftwarePage[];
 };
 
-// Noms courts & parlants pour chaque app
 const SOFTWARE_NAMES = [
-  "Meal Planner",    // 01
-  "Habit & Analytics",       // 02
-  "Budget Insights",      // 03
-  "Fitness Tracker",    // 04
-  "Ops Dashboard",  // 05
-  "Client CRM",         // 06
+  "Meal Planner",
+  "Habit & Analytics",
+  "Budget Insights",
+  "Fitness Tracker",
+  "Ops Dashboard",
+  "Client CRM",
 ];
 
-// Construction via deux boucles : x = 1..6, y = 1..4
-const SOFTWARE_GROUPS: SoftwareGroup[] = Array.from({ length: 6 }, (_, i) => {
-  const appId = i + 1; // 1..6
-  const name = SOFTWARE_NAMES[i] ?? `App 0${appId}`;
-  const pages: SoftwarePage[] = Array.from({ length: 4 }, (_, j) => {
-    const pageIndex = j + 1; // 1..4
-    const src = `/app/app${appId}${pageIndex}.jpg`;
-    return {
-      src,
-      alt: `${name} – Screen ${pageIndex}`,
-    };
-  });
-  return { id: appId, name, pages };
-});
+const SOFTWARE_GROUPS: SoftwareGroup[] = Array.from(
+  { length: 6 },
+  (_, index) => {
+    const appId = index + 1;
+    const name = SOFTWARE_NAMES[index] ?? `App 0${appId}`;
+
+    const pages = Array.from({ length: 4 }, (_, pageIndex) => ({
+      src: `/app/app${appId}${pageIndex + 1}.webp`,
+      alt: `${name} – Screen ${pageIndex + 1}`,
+    }));
+
+    return { id: appId, name, pages };
+  },
+);
 
 export default function WorkSoftwareSection() {
   const { lang } = useLang();
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const railRef = useRef<HTMLDivElement | null>(null);
+
+  const groups = SOFTWARE_GROUPS;
+  const loopGroups = [...groups, ...groups];
+
+  useAutoRail(railRef, loopGroups.length);
 
   const t = {
     en: {
       kicker: "Software",
       title: "Product UI & dashboards",
       close: "Close",
+      previous: "Previous screen",
+      next: "Next screen",
+      zoomIn: "Zoom in",
+      zoomOut: "Zoom out",
     },
     fr: {
       kicker: "Software",
       title: "Product UI & dashboards",
       close: "Fermer",
+      previous: "Écran précédent",
+      next: "Écran suivant",
+      zoomIn: "Agrandir",
+      zoomOut: "Réduire",
     },
   }[lang];
 
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const groups = SOFTWARE_GROUPS;
+  const slides = groups.flatMap((group) =>
+    group.pages.map((page, pageIndex) => ({
+      src: page.src,
+      alt: page.alt,
+      title: `${group.name} · ${String(pageIndex + 1).padStart(2, "0")}`,
+    })),
+  );
 
-  const activeGroup =
-    activeIndex !== null &&
-    activeIndex >= 0 &&
-    activeIndex < groups.length
-      ? groups[activeIndex]
-      : null;
-
-  const handleClose = () => setActiveIndex(null);
-
-  const handlePrevGroup = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!groups.length || activeIndex === null) return;
-    const idx = (activeIndex - 1 + groups.length) % groups.length;
-    setActiveIndex(idx);
-  };
-
-  const handleNextGroup = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!groups.length || activeIndex === null) return;
-    const idx = (activeIndex + 1) % groups.length;
-    setActiveIndex(idx);
-  };
-
-  // ESC + flèches pour naviguer entre les softwares (lightbox)
-  useEffect(() => {
-    if (activeIndex === null) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleClose();
-      if (e.key === "ArrowLeft") handlePrevGroup();
-      if (e.key === "ArrowRight") handleNextGroup();
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeIndex, groups.length]);
-
-  // ---------- Card réutilisable (grid + mobile) ----------
-  const renderCard = (group: SoftwareGroup, index: number) => (
-    <motion.article
-      key={`${group.id}-${index}`}
+  const renderCard = (
+    group: SoftwareGroup,
+    groupIndex: number,
+    key: string,
+  ) => (
+    <motion.button
+      type="button"
+      key={key}
+      onClick={() => setActiveIndex(groupIndex * group.pages.length)}
       className="
-        relative group
-        rounded-3xl border border-slate-200/70
-        bg-white/90 backdrop-blur-sm
-        overflow-hidden
+        relative group w-full overflow-hidden text-left
+        rounded-3xl border border-white/55
+        bg-white/18 backdrop-blur-sm
         cursor-zoom-in
       "
-      whileHover={{
-        y: -6, // léger lift, pas de grosse ombre
-      }}
+      whileHover={{ y: -6 }}
       transition={{ duration: 0.22, ease: "easeOut" }}
-      onClick={() => setActiveIndex(index)}
     >
       <div className="p-3 sm:p-4 space-y-3">
-        {/* Ligne info / label soft */}
-        <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.18em] text-slate-500">
-          <span className="inline-flex h-6 px-3 items-center justify-center rounded-full border border-slate-200 bg-slate-900 text-white">
-            {group.name}
-          </span>
-        </div>
-        {/* Mini grid 4 pages */}
-        <div
-          className="
-            grid gap-2
-            grid-cols-2
-          "
-        >
-          {group.pages.map((img) => (
+        <span className="
+          inline-flex h-7 px-3 items-center justify-center
+          rounded-full bg-slate-950 text-white
+          text-[10px] uppercase tracking-[0.18em]
+        ">
+          {group.name}
+        </span>
+
+        <div className="grid grid-cols-2 gap-2">
+          {group.pages.map((image) => (
             <div
-              key={img.src}
-              className="
-                relative
-                rounded-2xl overflow-hidden
-                bg-slate-900
-                aspect-[9/16]
-              "
+              key={image.src}
+              className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-slate-950"
             >
               <Image
-                src={img.src}
-                alt={img.alt}
+                src={image.src}
+                alt={image.alt}
                 fill
-                className="
-                  object-cover
-                  transition-transform duration-500
-                  group-hover:scale-[1.03]
-                "
-                sizes="(min-width: 1024px) 12vw, (min-width: 640px) 25vw, 60vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                sizes="(min-width: 1024px) 12vw, (min-width: 640px) 25vw, 130px"
               />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-black/15" />
             </div>
           ))}
         </div>
       </div>
-    </motion.article>
+    </motion.button>
   );
-
-  // ---------- Mobile : rail horizontal auto-défilant (loop) ----------
-  const railRef = useRef<HTMLDivElement | null>(null);
-  // on duplique les groupes pour permettre un loop fluide
-  const loopGroups = groups.length ? [...groups, ...groups] : [];
-
-  useAutoRail(railRef, loopGroups.length);
 
   return (
     <section aria-labelledby="software-title">
       <div className="space-y-8">
-        {/* Header */}
-        <motion.div
-          {...reveal}
-          className="space-y-3 text-center"
-        >
+        <motion.div {...reveal} className="space-y-3 text-center">
           <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
-          {t.kicker}
-        </p>
+            {t.kicker}
+          </p>
+
           <h2
             id="software-title"
             className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900"
@@ -183,175 +145,49 @@ export default function WorkSoftwareSection() {
           </h2>
         </motion.div>
 
-        {/* 💻 Desktop / tablette : grille */}
         <motion.div
           {...reveal}
-          className="
-            hidden
-            sm:grid gap-5
-            sm:grid-cols-2
-            lg:grid-cols-3
-          "
+          className="hidden sm:grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {groups.map((group, index) => renderCard(group, index))}
+          {groups.map((group, index) =>
+            renderCard(group, index, `desktop-${group.id}`),
+          )}
         </motion.div>
 
-        {/* 📱 Mobile : rail horizontal scrollable + auto-défilement */}
-        <motion.div
-          {...reveal}
-          className="sm:hidden px-4"
-        >
+        <motion.div {...reveal} className="sm:hidden px-4">
           <div
             ref={railRef}
             data-lenis-prevent
-            className="
-              flex gap-4
-              overflow-x-auto
-              py-2
-              no-scrollbar
-            "
+            className="flex gap-4 overflow-x-auto py-2 no-scrollbar"
           >
-            {loopGroups.map((group, idx) => {
-              const originalIndex = idx % groups.length;
+            {loopGroups.map((group, index) => {
+              const originalIndex = index % groups.length;
+
               return (
-                <button
-                  type="button"
-                  key={`${group.id}-${idx}`}
-                  onClick={() => setActiveIndex(originalIndex)}
-                  className="shrink-0"
+                <div
+                  key={`${group.id}-${index}`}
+                  className="shrink-0 w-[260px]"
                 >
-                  <div className="w-[260px]">
-                    {renderCard(group, originalIndex)}
-                  </div>
-                </button>
+                  {renderCard(
+                    group,
+                    originalIndex,
+                    `mobile-${group.id}-${index}`,
+                  )}
+                </div>
               );
             })}
-            {!loopGroups.length && (
-              <div className="w-full aspect-[9/16] rounded-3xl border border-dashed border-slate-300 flex items-center justify-center text-xs text-slate-400">
-                (No software UI yet)
-              </div>
-            )}
           </div>
         </motion.div>
       </div>
 
-      {/* Lightbox plein écran : 4 pages de l'app active */}
-      {activeGroup && (
-        <div
-          className="
-            fixed inset-0 z-[60]
-            bg-black/70 backdrop-blur-[3px]
-            flex items-center justify-center
-            px-4
-          "
-          onClick={handleClose}
-        >
-          <div
-            className="
-              relative w-full max-w-5xl max-h-[92vh]
-              rounded-[30px] overflow-hidden
-              bg-white
-              border border-slate-200
-              shadow-[0_32px_90px_rgba(15,23,42,0.45)]
-              flex flex-col
-            "
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header lightbox */}
-            <div className="flex items-center justify-between px-4 sm:px-6 pt-4 pb-3 border-b border-slate-200">
-              <div className="flex items-center gap-3">
-                <span className="text-[11px] font-medium tracking-[0.22em] uppercase text-slate-500">
-                  {activeGroup.name}
-                </span>
-                <span className="hidden sm:inline text-xs text-slate-500">
-                   · product UI
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                {groups.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handlePrevGroup}
-                      className="
-                        inline-flex items-center justify-center
-                        h-8 w-8 rounded-full
-                        bg-slate-900 text-slate-50
-                        border border-slate-300
-                        text-xs
-                        hover:bg-slate-800 transition
-                      "
-                    >
-                      ‹
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleNextGroup}
-                      className="
-                        inline-flex items-center justify-center
-                        h-8 w-8 rounded-full
-                        bg-slate-900 text-slate-50
-                        border border-slate-300
-                        text-xs
-                        hover:bg-slate-800 transition
-                      "
-                    >
-                      ›
-                    </button>
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="
-                    inline-flex items-center justify-center
-                    h-8 w-8 rounded-full
-                    bg-black/70 text-white
-                    border border-white/30
-                    text-xs font-medium
-                    hover:bg-black/90 transition
-                  "
-                  aria-label={t.close}
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            {/* Grille des 4 pages en grand */}
-            <div className="flex-1 overflow-auto p-4 sm:p-6 bg-slate-950/80">
-              <div
-                className="
-                  grid gap-4
-                  grid-cols-2
-                  lg:grid-cols-4
-                "
-              >
-                {activeGroup.pages.map((img) => (
-                  <motion.div
-                    key={img.src}
-                    className="
-                      relative rounded-2xl overflow-hidden
-                      bg-black
-                      aspect-[9/16]
-                    "
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                  >
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      fill
-                      className="object-cover"
-                      sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 80vw"
-                    />
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <WorkLightbox
+        slides={slides}
+        index={activeIndex ?? 0}
+        open={activeIndex !== null}
+        sectionLabel={t.kicker}
+        onClose={() => setActiveIndex(null)}
+        labels={t}
+      />
     </section>
   );
 }

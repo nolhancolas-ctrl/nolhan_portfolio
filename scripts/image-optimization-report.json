@@ -1,0 +1,251 @@
+{
+  "generatedAt": "2026-09-14T18:09:51.343Z",
+  "totalBefore": 207615971,
+  "totalAfter": 3132350,
+  "savedBytes": 204483621,
+  "reductionPercent": 98.5,
+  "converted": [
+    {
+      "source": "app/app11.jpg",
+      "target": "app/app11.webp",
+      "before": 561070,
+      "after": 73014
+    },
+    {
+      "source": "app/app12.jpg",
+      "target": "app/app12.webp",
+      "before": 681153,
+      "after": 104702
+    },
+    {
+      "source": "app/app13.jpg",
+      "target": "app/app13.webp",
+      "before": 662515,
+      "after": 105252
+    },
+    {
+      "source": "app/app14.jpg",
+      "target": "app/app14.webp",
+      "before": 738969,
+      "after": 133746
+    },
+    {
+      "source": "app/app21.jpg",
+      "target": "app/app21.webp",
+      "before": 388840,
+      "after": 42108
+    },
+    {
+      "source": "app/app22.jpg",
+      "target": "app/app22.webp",
+      "before": 418944,
+      "after": 55806
+    },
+    {
+      "source": "app/app23.jpg",
+      "target": "app/app23.webp",
+      "before": 445218,
+      "after": 56680
+    },
+    {
+      "source": "app/app24.jpg",
+      "target": "app/app24.webp",
+      "before": 374046,
+      "after": 43000
+    },
+    {
+      "source": "app/app31.jpg",
+      "target": "app/app31.webp",
+      "before": 546401,
+      "after": 75884
+    },
+    {
+      "source": "app/app32.jpg",
+      "target": "app/app32.webp",
+      "before": 515111,
+      "after": 69126
+    },
+    {
+      "source": "app/app33.jpg",
+      "target": "app/app33.webp",
+      "before": 510014,
+      "after": 77312
+    },
+    {
+      "source": "app/app34.jpg",
+      "target": "app/app34.webp",
+      "before": 511576,
+      "after": 76394
+    },
+    {
+      "source": "app/app41.jpg",
+      "target": "app/app41.webp",
+      "before": 516025,
+      "after": 68816
+    },
+    {
+      "source": "app/app42.jpg",
+      "target": "app/app42.webp",
+      "before": 472490,
+      "after": 63982
+    },
+    {
+      "source": "app/app43.jpg",
+      "target": "app/app43.webp",
+      "before": 499715,
+      "after": 56628
+    },
+    {
+      "source": "app/app44.jpg",
+      "target": "app/app44.webp",
+      "before": 475800,
+      "after": 56762
+    },
+    {
+      "source": "app/app51.jpg",
+      "target": "app/app51.webp",
+      "before": 497566,
+      "after": 67904
+    },
+    {
+      "source": "app/app52.jpg",
+      "target": "app/app52.webp",
+      "before": 523274,
+      "after": 78710
+    },
+    {
+      "source": "app/app53.jpg",
+      "target": "app/app53.webp",
+      "before": 514976,
+      "after": 78546
+    },
+    {
+      "source": "app/app54.jpg",
+      "target": "app/app54.webp",
+      "before": 481673,
+      "after": 69328
+    },
+    {
+      "source": "app/app61.jpg",
+      "target": "app/app61.webp",
+      "before": 438803,
+      "after": 63890
+    },
+    {
+      "source": "app/app62.jpg",
+      "target": "app/app62.webp",
+      "before": 405672,
+      "after": 50258
+    },
+    {
+      "source": "app/app63.jpg",
+      "target": "app/app63.webp",
+      "before": 452479,
+      "after": 73704
+    },
+    {
+      "source": "app/app64.jpg",
+      "target": "app/app64.webp",
+      "before": 451473,
+      "after": 69258
+    },
+    {
+      "source": "landing/designed1.png",
+      "target": "landing/designed1.webp",
+      "before": 27619732,
+      "after": 225156
+    },
+    {
+      "source": "landing/designed2.png",
+      "target": "landing/designed2.webp",
+      "before": 26111483,
+      "after": 103174
+    },
+    {
+      "source": "landing/designed3.png",
+      "target": "landing/designed3.webp",
+      "before": 20555628,
+      "after": 75160
+    },
+    {
+      "source": "landing/designed4.png",
+      "target": "landing/designed4.webp",
+      "before": 20028280,
+      "after": 64650
+    },
+    {
+      "source": "landing/designed5.png",
+      "target": "landing/designed5.webp",
+      "before": 31721211,
+      "after": 196852
+    },
+    {
+      "source": "landing/designed6.png",
+      "target": "landing/designed6.webp",
+      "before": 14638684,
+      "after": 125896
+    },
+    {
+      "source": "landing/designed7.png",
+      "target": "landing/designed7.webp",
+      "before": 29123891,
+      "after": 301492
+    },
+    {
+      "source": "landing/designed8.png",
+      "target": "landing/designed8.webp",
+      "before": 19408451,
+      "after": 141596
+    },
+    {
+      "source": "logos/logo1.png",
+      "target": "logos/logo1.webp",
+      "before": 1067346,
+      "after": 23876
+    },
+    {
+      "source": "logos/logo2.png",
+      "target": "logos/logo2.webp",
+      "before": 170372,
+      "after": 13824
+    },
+    {
+      "source": "logos/logo3.png",
+      "target": "logos/logo3.webp",
+      "before": 1176793,
+      "after": 29882
+    },
+    {
+      "source": "logos/logo4.png",
+      "target": "logos/logo4.webp",
+      "before": 181332,
+      "after": 15318
+    },
+    {
+      "source": "logos/logo5.png",
+      "target": "logos/logo5.webp",
+      "before": 1224731,
+      "after": 24186
+    },
+    {
+      "source": "logos/logo6.png",
+      "target": "logos/logo6.webp",
+      "before": 901945,
+      "after": 14438
+    },
+    {
+      "source": "logos/logo7.png",
+      "target": "logos/logo7.webp",
+      "before": 125046,
+      "after": 8236
+    },
+    {
+      "source": "logos/logo8.png",
+      "target": "logos/logo8.webp",
+      "before": 1477243,
+      "after": 57804
+    }
+  ],
+  "recompressed": [],
+  "skipped": []
+}

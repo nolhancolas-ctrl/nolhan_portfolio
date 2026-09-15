@@ -4,7 +4,6 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 import { reveal } from "@/lib/motion";
-import { CAL_URL } from "@/lib/site";
 
 const CalBooking = dynamic(() => import("./CalBooking"), { ssr: false });
 
@@ -30,9 +29,6 @@ export default function ContactSection() {
       >
         {near && <CalBooking lang={lang} />}
       </motion.div>
-      <p className="booking-signature">
-        <a href={CAL_URL} target="_blank" rel="noopener noreferrer">Cal.com</a>
-      </p>
     </section>
   );
 }
