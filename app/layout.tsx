@@ -12,11 +12,11 @@ import CursorGlow from "@/components/layout/CursorGlow";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { LangProvider } from "@/hooks/useLang";
-import { SITE_NAME, SITE_URL } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: `${SITE_NAME} – Développeur Frontend`,
+  title: "Nolhan Colas — Web Engineer & Designer",
   description: "Expériences Web créatives et interactives.",
 };
 
