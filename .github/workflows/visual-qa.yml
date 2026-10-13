@@ -1,0 +1,61 @@
+name: Temporary visual QA
+on:
+  push:
+    branches:
+      - codex/selected-work-showcase
+    paths:
+      - .github/workflows/visual-qa.yml
+permissions:
+  contents: write
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Capture the Odyssea section at two widths
+        shell: bash
+        run: |
+          mkdir -p .artifacts
+          npm run start -- --port 3000 > /tmp/next.log 2>&1 &
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:3000/work > /dev/null; then break; fi
+            sleep 2
+          done
+          node <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            for (const [name, width, height] of [['desktop', 1440, 900], ['mobile', 390, 844]]) {
+              const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+              const page = await context.newPage();
+              await page.goto('http://127.0.0.1:3000/work', { waitUntil: 'domcontentloaded' });
+              const section = page.locator('#systems');
+              await section.scrollIntoViewIfNeeded();
+              await page.waitForTimeout(1000);
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+              if (overflow) throw new Error(name + ' horizontal overflow');
+              await section.screenshot({ path: '.artifacts/odyssea-systems-' + name + '.png' });
+              console.log(name + ' section rendered without horizontal overflow');
+              await context.close();
+            }
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          JS
+      - name: Save temporary QA images
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .artifacts/odyssea-systems-desktop.png .artifacts/odyssea-systems-mobile.png
+          git commit -m "Temporary Odyssea visual QA captures"
+          git push origin HEAD:codex/selected-work-showcase
