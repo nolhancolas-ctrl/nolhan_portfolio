@@ -75,11 +75,11 @@ export default function WorkLogosSection({ media }: Props) {
 
       <div className="grid gap-x-7 gap-y-10 md:grid-cols-2">
         {marks.map((mark, index) => (
-          <WorkReveal key={mark.name} drift={index % 2 === 0 ? 14 : -14} delay={index % 2 === 0 ? 0 : 0.08}>
+          <WorkReveal key={mark.name} className="h-full">
             <article>
               {mark.src ? (
                 <button type="button" onClick={() => openLogo(mark.src)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + mark.name}>
-                  <WorkMedia src={mark.src} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} />
+                  <WorkMedia src={mark.src} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} fit="square" />
                 </button>
               ) : (
                 <WorkMedia src={null} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} />
