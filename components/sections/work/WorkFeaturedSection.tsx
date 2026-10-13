@@ -6,6 +6,7 @@ import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia, { type WorkMediaTone } from "@/components/work/WorkMedia";
 import WorkReveal from "@/components/work/WorkReveal";
 import DesignFocusIcon from "@/components/work/DesignFocusIcon";
+import WorkExternalLink from "@/components/work/WorkExternalLink";
 import type { SelectedWorkMedia } from "@/types/selectedWork";
 
 type Props = { media: SelectedWorkMedia };
@@ -34,7 +35,7 @@ export default function WorkFeaturedSection({ media }: Props) {
       eyebrow: "01 / Web experiences",
       heading: "Built around the story.",
       subheading: "Three directions, each with its own visual rhythm.",
-      live: "odysseavision.com ↗",
+      live: "odysseavision.com",
       open: "Enlarge image",
       decisions: "Design focus",
       close: "Close",
@@ -79,7 +80,7 @@ export default function WorkFeaturedSection({ media }: Props) {
       eyebrow: "01 / Expériences web",
       heading: "Un design au service du récit.",
       subheading: "Trois directions, chacune avec son propre rythme visuel.",
-      live: "odysseavision.com ↗",
+      live: "odysseavision.com",
       open: "Agrandir l’image",
       decisions: "Parti pris",
       close: "Fermer",
@@ -177,11 +178,6 @@ export default function WorkFeaturedSection({ media }: Props) {
           <article aria-labelledby={`project-title-${index}`} className="py-14 sm:py-20">
             <WorkReveal className="mb-10 text-center" drift={-8}>
               <h3 id={`project-title-${index}`} className="text-4xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-6xl">{project.title}</h3>
-              {project.liveUrl && (
-                <a href={project.liveUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-full border border-white/80 bg-white/75 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white">
-                  {copy.live}
-                </a>
-              )}
             </WorkReveal>
 
             <WorkReveal drift={14}>
@@ -222,6 +218,12 @@ export default function WorkFeaturedSection({ media }: Props) {
                 </div>
               </WorkReveal>
             </div>
+
+            {project.liveUrl && (
+              <WorkReveal className="mt-9 text-center" drift={8}>
+                <WorkExternalLink href={project.liveUrl} ariaLabel={copy.live}>{copy.live}</WorkExternalLink>
+              </WorkReveal>
+            )}
           </article>
 
         </div>
