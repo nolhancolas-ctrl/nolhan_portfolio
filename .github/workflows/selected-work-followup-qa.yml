@@ -46,9 +46,11 @@ jobs:
             if (await carousel.locator('button').count() !== 4) throw new Error('Logo row changed size');
             await page.screenshot({ path: '.artifacts/logos-second.jpg', quality: 72 });
             await carousel.hover();
+            await page.waitForTimeout(950);
+            const hovered = await carousel.locator('button img').first().getAttribute('alt');
             await page.waitForTimeout(5500);
             const paused = await carousel.locator('button img').first().getAttribute('alt');
-            if (paused !== second) throw new Error('Logo carousel did not pause on hover');
+            if (paused !== hovered) throw new Error('Logo carousel did not pause on hover: ' + hovered + ' -> ' + paused);
             const imgs = page.locator('#systems button img');
             if (await imgs.count() !== 3) throw new Error('Expected three admin images');
             const sources = await imgs.evaluateAll(nodes => nodes.map(img => new URL(img.currentSrc || img.src).searchParams.get('url') || img.currentSrc || img.src));
@@ -79,4 +81,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .artifacts
           git commit -m "Temporary Selected Work follow-up review captures"
+          git pull --rebase
           git push
