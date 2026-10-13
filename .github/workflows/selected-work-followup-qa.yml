@@ -1,0 +1,82 @@
+name: Selected Work follow-up QA
+on:
+  push:
+    branches: [codex/selected-work-showcase]
+    paths: [.github/workflows/selected-work-followup-qa.yml]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start site
+        run: |
+          npm run start -- --port 3000 > /tmp/next.log 2>&1 &
+          for i in {1..60}; do curl -fsS http://127.0.0.1:3000/work >/dev/null && exit 0; sleep 2; done
+          cat /tmp/next.log
+          exit 1
+      - name: Check carousel, admin images, links, and responsive layout
+        run: |
+          mkdir -p .artifacts
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+            await page.goto('http://127.0.0.1:3000/work', { waitUntil: 'networkidle' });
+            const carousel = page.locator('#identities [aria-roledescription="carousel"]');
+            await carousel.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(800);
+            const first = await carousel.locator('button img').first().getAttribute('alt');
+            if (first !== 'Terra Sculptura logo') throw new Error('Unexpected first logo: ' + first);
+            if (await carousel.locator('button').count() !== 4) throw new Error('Expected four visible logos');
+            await page.screenshot({ path: '.artifacts/logos-first.jpg', quality: 72 });
+            await page.waitForTimeout(6000);
+            const second = await carousel.locator('button img').first().getAttribute('alt');
+            if (second === first) throw new Error('Logo carousel did not advance after five seconds');
+            if (await carousel.locator('button').count() !== 4) throw new Error('Logo row changed size');
+            await page.screenshot({ path: '.artifacts/logos-second.jpg', quality: 72 });
+            await carousel.hover();
+            await page.waitForTimeout(5500);
+            const paused = await carousel.locator('button img').first().getAttribute('alt');
+            if (paused !== second) throw new Error('Logo carousel did not pause on hover');
+            const imgs = page.locator('#systems button img');
+            if (await imgs.count() !== 3) throw new Error('Expected three admin images');
+            const sources = await imgs.evaluateAll(nodes => nodes.map(img => new URL(img.currentSrc || img.src).searchParams.get('url') || img.currentSrc || img.src));
+            if (new Set(sources).size !== 3) throw new Error('Admin images are duplicated: ' + JSON.stringify(sources));
+            if (await page.locator('#systems a[href*="node-id=3-2"]').count() !== 1) throw new Error('Updated Figma link missing');
+            await page.evaluate(() => { const el = document.getElementById('systems'); window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 130); });
+            await page.waitForTimeout(800);
+            await page.screenshot({ path: '.artifacts/admin.jpg', quality: 72 });
+            const icon = await browser.newPage({ viewport: { width: 180, height: 180 }, deviceScaleFactor: 1 });
+            await icon.setContent('<style>body{margin:0;display:grid;place-items:center;width:180px;height:180px;background:#f0eaf7}img{width:144px;height:144px}</style><img src="http://127.0.0.1:3000/icon.svg">');
+            await icon.locator('img').waitFor();
+            await icon.screenshot({ path: '.artifacts/favicon.jpg', quality: 85 });
+            const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+            await mobile.goto('http://127.0.0.1:3000/work', { waitUntil: 'networkidle' });
+            await mobile.locator('#identities').scrollIntoViewIfNeeded();
+            await mobile.waitForTimeout(500);
+            const overflow = await mobile.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            if (overflow > 2) throw new Error('Mobile horizontal overflow: ' + overflow);
+            await mobile.screenshot({ path: '.artifacts/logos-mobile.jpg', quality: 72 });
+            console.log(JSON.stringify({ first, second, paused, sources, overflow, status: 'passed' }));
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+      - name: Save temporary review captures
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .artifacts
+          git commit -m "Temporary Selected Work follow-up review captures"
+          git push
