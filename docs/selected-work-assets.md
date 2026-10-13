@@ -19,4 +19,4 @@ The Selected Work images live in `public/work/` and `public/logos/`. All capture
 | `public/logos/odyssea-vision.png` | Odyssea Vision mark | Identity carousel |
 | `public/logos/logo1.webp` … `logo8.webp` | Earlier mark studies | Identity carousel |
 
-The identity carousel displays four marks per row, advancing upward every five seconds while visible. It pauses during hover or keyboard focus; visitors who request reduced motion see the complete static grid. Each work image opens the lightbox when clicked. The three Systems images must remain distinct: dashboard, stories, then portfolio.
+The identity carousel displays two rows at a time (four marks per row on desktop, two on mobile), advancing upward by one row every four seconds while visible. It pauses during hover or keyboard focus; visitors who request reduced motion see the complete static grid. Each work image opens the lightbox when clicked. The three Systems images must remain distinct: dashboard, stories, then portfolio.
