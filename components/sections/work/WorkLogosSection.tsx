@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia, { type WorkMediaTone } from "@/components/work/WorkMedia";
@@ -9,15 +10,20 @@ import type { SelectedWorkMedia } from "@/types/selectedWork";
 
 type Props = { media: SelectedWorkMedia };
 type Mark = { name: string; src: string | null; tone: WorkMediaTone };
-const PAGE_SIZE = 8;
+const ROW_SIZE = 4;
+const ROTATION_MS = 5000;
 
 export default function WorkLogosSection({ media }: Props) {
   const { lang } = useLang();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [page, setPage] = useState(0);
+  const [row, setRow] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(carouselRef, { amount: 0.25 });
+  const reducedMotion = useReducedMotion();
   const copy = {
-    en: { title: "Marks & logotypes", open: "Enlarge logo", close: "Close", previous: "Previous logo", next: "Next logo", zoomIn: "Zoom in", zoomOut: "Zoom out", previousGroup: "Previous logos", nextGroup: "Next logos" },
-    fr: { title: "Signatures & logotypes", open: "Agrandir le logo", close: "Fermer", previous: "Logo précédent", next: "Logo suivant", zoomIn: "Agrandir", zoomOut: "Réduire", previousGroup: "Logos précédents", nextGroup: "Logos suivants" },
+    en: { title: "Marks & logotypes", open: "Enlarge logo", close: "Close", previous: "Previous logo", next: "Next logo", zoomIn: "Zoom in", zoomOut: "Zoom out" },
+    fr: { title: "Signatures & logotypes", open: "Agrandir le logo", close: "Fermer", previous: "Logo précédent", next: "Logo suivant", zoomIn: "Agrandir", zoomOut: "Réduire" },
   }[lang];
 
   const marks: Mark[] = [
@@ -32,13 +38,27 @@ export default function WorkLogosSection({ media }: Props) {
     })),
   ];
   const availableMarks = marks.filter((mark): mark is Mark & { src: string } => Boolean(mark.src));
+  const rows = Array.from({ length: Math.ceil(availableMarks.length / ROW_SIZE) }, (_, index) =>
+    availableMarks.slice(index * ROW_SIZE, (index + 1) * ROW_SIZE)
+  );
   const slides = availableMarks.map((mark) => ({ src: mark.src, alt: mark.name, title: mark.name }));
-  const totalPages = Math.ceil(availableMarks.length / PAGE_SIZE);
-  const visibleMarks = availableMarks.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const currentRow = rows[row % Math.max(rows.length, 1)] ?? [];
+
+  useEffect(() => {
+    if (reducedMotion || paused || !inView || rows.length < 2) return;
+    const timer = window.setInterval(() => setRow((current) => (current + 1) % rows.length), ROTATION_MS);
+    return () => window.clearInterval(timer);
+  }, [inView, paused, reducedMotion, rows.length]);
+
   const openLogo = (src: string) => {
     const index = slides.findIndex((slide) => slide.src === src);
     if (index >= 0) setActiveIndex(index);
   };
+  const renderMark = (mark: Mark & { src: string }) => (
+    <button key={mark.src} type="button" onClick={() => openLogo(mark.src)} className="block min-w-0 cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + mark.name}>
+      <WorkMedia src={mark.src} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} fit="square" />
+    </button>
+  );
 
   return (
     <section id="identities" aria-labelledby="identities-title" className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28">
@@ -47,20 +67,37 @@ export default function WorkLogosSection({ media }: Props) {
       </WorkReveal>
 
       <WorkReveal>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
-          {visibleMarks.map((mark) => (
-            <button key={mark.src} type="button" onClick={() => openLogo(mark.src)} className="block min-w-0 cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + mark.name}>
-              <WorkMedia src={mark.src} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} fit="square" />
-            </button>
-          ))}
+        <div
+          ref={carouselRef}
+          className="grid overflow-hidden rounded-[26px]"
+          aria-roledescription="carousel"
+          aria-label={copy.title}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node)) setPaused(false);
+          }}
+        >
+          {reducedMotion ? (
+            <div className="col-start-1 row-start-1 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4">
+              {availableMarks.map(renderMark)}
+            </div>
+          ) : (
+            <AnimatePresence initial={false} mode="sync">
+              <motion.div
+                key={row}
+                initial={{ y: "100%" }}
+                animate={{ y: "0%" }}
+                exit={{ y: "-100%" }}
+                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+                className="col-start-1 row-start-1 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-4"
+              >
+                {currentRow.map(renderMark)}
+              </motion.div>
+            </AnimatePresence>
+          )}
         </div>
-        {totalPages > 1 && (
-          <div className="mt-6 flex items-center justify-center gap-5">
-            <button type="button" onClick={() => setPage((current) => (current - 1 + totalPages) % totalPages)} aria-label={copy.previousGroup} className="grid h-10 w-10 place-items-center rounded-full border border-white/75 bg-white/60 text-slate-900 transition hover:bg-white">←</button>
-            <span className="text-xs font-semibold tabular-nums tracking-[0.2em] text-slate-600">{String(page + 1).padStart(2, "0")} / {String(totalPages).padStart(2, "0")}</span>
-            <button type="button" onClick={() => setPage((current) => (current + 1) % totalPages)} aria-label={copy.nextGroup} className="grid h-10 w-10 place-items-center rounded-full border border-white/75 bg-white/60 text-slate-900 transition hover:bg-white">→</button>
-          </div>
-        )}
       </WorkReveal>
 
       {slides.length > 0 && <WorkLightbox slides={slides} index={activeIndex ?? 0} open={activeIndex !== null} sectionLabel={copy.title} onClose={() => setActiveIndex(null)} labels={copy} />}
