@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="N">
+  <rect width="64" height="64" rx="14" fill="#111827"/>
+  <g fill="#F6F2FF">
+    <path d="M12 10h8v44h-8zM44 10h8v44h-8z"/>
+  </g>
+  <g fill="#B9A6F1">
+    <rect x="20" y="10" width="8" height="8"/>
+    <rect x="26" y="19" width="8" height="8"/>
+    <rect x="32" y="28" width="8" height="8"/>
+    <rect x="38" y="37" width="8" height="8"/>
+  </g>
+</svg>
