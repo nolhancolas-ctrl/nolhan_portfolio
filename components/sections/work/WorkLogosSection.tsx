@@ -86,14 +86,14 @@ export default function WorkLogosSection({ media }: Props) {
     const index = slides.findIndex((slide) => slide.src === src);
     if (index >= 0) setActiveIndex(index);
   };
-  const renderMark = (mark: Mark & { src: string }) => (
-    <button key={mark.src} type="button" onClick={() => openLogo(mark.src)} className="block min-w-0 cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + mark.name}>
+  const renderMark = (mark: Mark & { src: string }, hidden: boolean) => (
+    <button key={mark.src} type="button" onClick={() => openLogo(mark.src)} tabIndex={hidden ? -1 : undefined} className="block min-w-0 cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + mark.name}>
       <WorkMedia src={mark.src} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} fit="square" className="!shadow-none" />
     </button>
   );
   const renderRow = (marksInRow: Array<Mark & { src: string }>, index: number) => (
-    <div key={index} data-logo-row className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {marksInRow.map(renderMark)}
+    <div key={index} data-logo-row aria-hidden={index === 2} className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {marksInRow.map((mark) => renderMark(mark, index === 2))}
     </div>
   );
 
@@ -118,7 +118,7 @@ export default function WorkLogosSection({ media }: Props) {
           }}
         >
           {reducedMotion ? (
-            <div className="col-start-1 row-start-1 flex flex-col gap-3">
+            <div className="col-start-1 row-start-1 flex h-max flex-col gap-3">
               {visibleRows.slice(0, 2).map(renderRow)}
             </div>
           ) : (
