@@ -1,0 +1,39 @@
+name: Convert supplied Odyssea admin captures
+on:
+  push:
+    branches: [codex/selected-work-showcase]
+    paths: [.github/workflows/selected-work-admin-images.yml]
+permissions:
+  contents: write
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Convert PNG captures to WebP
+        run: |
+          node <<'NODE'
+          const sharp = require('sharp');
+          const fs = require('fs');
+          (async () => {
+            for (const name of ['dashboard', 'stories', 'portfolio']) {
+              const input = 'public/work/software/odyssea-admin-' + name + '.png';
+              const output = 'public/work/software/odyssea-admin-' + name + '.webp';
+              await sharp(input).webp({ quality: 82, effort: 6 }).toFile(output);
+              console.log(name, fs.statSync(input).size, fs.statSync(output).size);
+            }
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+      - name: Commit converted assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm public/work/software/odyssea-admin-dashboard.png public/work/software/odyssea-admin-stories.png public/work/software/odyssea-admin-portfolio.png
+          git add public/work/software/odyssea-admin-dashboard.webp public/work/software/odyssea-admin-stories.webp public/work/software/odyssea-admin-portfolio.webp
+          git commit -m "Convert supplied Odyssea admin captures to WebP"
+          git push
