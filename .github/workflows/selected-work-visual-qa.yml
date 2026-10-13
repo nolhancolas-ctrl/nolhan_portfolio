@@ -1,0 +1,80 @@
+name: Selected Work visual QA
+on:
+  push:
+    branches: [codex/selected-work-showcase]
+    paths: [.github/workflows/selected-work-visual-qa.yml]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start site
+        run: |
+          npm run start -- --port 3000 > /tmp/next.log 2>&1 &
+          for i in {1..60}; do curl -fsS http://127.0.0.1:3000/work >/dev/null && exit 0; sleep 2; done
+          cat /tmp/next.log
+          exit 1
+      - name: Check layout and capture review screenshots
+        run: |
+          mkdir -p .artifacts
+          node <<'NODE'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
+            await page.goto('http://127.0.0.1:3000/work', { waitUntil: 'networkidle' });
+            await page.screenshot({ path: '.artifacts/work-hero.png' });
+            const projects = page.locator('#websites article[aria-labelledby^="project-title"]');
+            if (await projects.count() !== 3) throw new Error('Expected three featured projects');
+            if (await page.getByText('A quieter commerce experience', { exact: false }).count()) throw new Error('Old summary still visible');
+            if (await page.getByText('Three directions, each with its own visual rhythm.', { exact: true }).count()) throw new Error('Old section subtitle still visible');
+            if (await page.locator('#identities .grid > button').count() !== 8) throw new Error('Expected eight logos on first page');
+            await projects.nth(1).locator('.mt-6.grid').scrollIntoViewIfNeeded();
+            await page.waitForTimeout(700);
+            const focus = await projects.nth(1).locator('.mt-6.grid').evaluate(el => {
+              const children = [...el.children].map(child => child.getBoundingClientRect());
+              return { imageHeight: children[0].height, textHeight: children[1].height, topDifference: Math.abs(children[0].top - children[1].top) };
+            });
+            if (focus.topDifference > 2 || Math.abs(focus.imageHeight - focus.textHeight) > 6) throw new Error('Design focus misaligned: ' + JSON.stringify(focus));
+            await page.screenshot({ path: '.artifacts/work-focus.png' });
+            await page.locator('#identities').scrollIntoViewIfNeeded();
+            await page.waitForTimeout(500);
+            await page.screenshot({ path: '.artifacts/work-logos.png' });
+            await page.locator('#systems').scrollIntoViewIfNeeded();
+            await page.waitForTimeout(2500);
+            if (await page.locator('#systems details').count()) throw new Error('Archive accordion still visible');
+            if (await page.locator('#systems a[href*="figma.com/design/01YyxmIktchrjQPweMKuaJ"]').count() !== 1) throw new Error('Figma link missing');
+            if (await page.locator('a[href="https://www.odysseavision.com/"]').count() !== 1) throw new Error('Odyssea link missing');
+            await page.screenshot({ path: '.artifacts/work-systems.png' });
+            await page.locator('#identities').scrollIntoViewIfNeeded();
+            await page.locator('#identities button[aria-label="Next logos"]').click();
+            if (await page.locator('#identities .grid > button').count() !== 4) throw new Error('Expected four logos on second page');
+            const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 });
+            await mobile.goto('http://127.0.0.1:3000/work', { waitUntil: 'networkidle' });
+            await mobile.locator('#systems').scrollIntoViewIfNeeded();
+            await mobile.waitForTimeout(400);
+            const overflow = await mobile.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+            if (overflow > 2) throw new Error('Mobile horizontal overflow: ' + overflow);
+            await mobile.screenshot({ path: '.artifacts/work-mobile-systems.png' });
+            console.log(JSON.stringify({ focus, mobileOverflow: overflow, status: 'passed' }));
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+      - name: Save screenshots for review
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .artifacts
+          git commit -m "Temporary selected work review screenshots"
+          git push
