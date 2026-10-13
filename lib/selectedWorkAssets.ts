@@ -10,10 +10,10 @@ const assetPaths: Record<keyof SelectedWorkMedia, string> = {
   aubeHome: "work/sites/aube-home.webp",
   aubeDetail: "work/sites/aube-detail.webp",
   odysseaAdmin: "work/software/odyssea-admin.webp",
-  terraLogo: "work/logos/terra-sculptura.png",
-  aubeLogo: "work/logos/aube-coffee.png",
-  atelierLogo: "work/logos/atelier-chrome-craft.png",
-  odysseaLogo: "work/logos/odyssea-vision.png",
+  terraLogo: "logos/terra-sculptura.png",
+  aubeLogo: "logos/aube-coffee.png",
+  atelierLogo: "logos/atelier-chrome-craft.png",
+  odysseaLogo: "logos/odyssea-vision.png",
 };
 
 export function getSelectedWorkMedia(): SelectedWorkMedia {

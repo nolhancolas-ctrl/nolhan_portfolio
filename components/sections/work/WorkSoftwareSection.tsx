@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia from "@/components/work/WorkMedia";
+import WorkReveal from "@/components/work/WorkReveal";
 import type { SelectedWorkMedia } from "@/types/selectedWork";
 
 type Props = { media: SelectedWorkMedia };
@@ -14,22 +15,20 @@ export default function WorkSoftwareSection({ media }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const copy = {
     en: {
-      eyebrow: "Systems & interfaces",
-      title: "The useful side of the experience.",
-      intro: "A visual language also has to hold up when someone uses the product every day.",
-      projectType: "Odyssea Vision · editorial dashboard",
-      adminTitle: "A clearer way to publish stories.",
-      adminBody: "Alongside the public website, an admin interface helps the team manage stories, media and client albums. The design connects the polished front end with the practical work behind it.",
-      adminAlt: "Odyssea Vision admin dashboard screenshot",
-      explore: "Inspect the interface",
-      principles: [
-        { title: "Structure", body: "Content organised around the tasks the team actually performs." },
-        { title: "Consistency", body: "Shared visual cues connect the public and private sides of the product." },
-        { title: "Autonomy", body: "The team can keep the experience alive as the content evolves." },
+      eyebrow: "03 / Systems & interfaces",
+      title: "The experience continues behind the scenes.",
+      intro: "A public website is only part of the work. The tools behind it deserve the same care.",
+      project: "Odyssea Vision / Editorial workspace",
+      description: "The admin brings stories, portfolio, videos and client albums into one place. Its hierarchy is designed around publishing work, so the team can keep the public experience current.",
+      points: [
+        { title: "One workspace", body: "Related content lives together instead of being scattered across tools." },
+        { title: "Clear next steps", body: "The dashboard makes recent content and ongoing activity easy to find." },
+        { title: "Editorial continuity", body: "The private interface supports the same story-led site visitors see." },
       ],
-      more: "More interface explorations",
-      moreIntro: "A smaller selection of product concepts, kept here as supporting studies.",
+      more: "Earlier interface studies",
+      moreIntro: "A compact archive of product UI explorations.",
       concept: "Interface concept",
+      open: "Enlarge interface",
       close: "Close",
       previous: "Previous image",
       next: "Next image",
@@ -37,22 +36,20 @@ export default function WorkSoftwareSection({ media }: Props) {
       zoomOut: "Zoom out",
     },
     fr: {
-      eyebrow: "Systèmes & interfaces",
-      title: "La partie utile de l’expérience.",
-      intro: "Un langage visuel doit aussi fonctionner pour celles et ceux qui utilisent le produit chaque jour.",
-      projectType: "Odyssea Vision · tableau de bord éditorial",
-      adminTitle: "Une façon plus claire de publier les récits.",
-      adminBody: "En parallèle du site public, une interface d’administration aide l’équipe à gérer récits, médias et albums clients. Le design relie l’expérience visible au travail concret qui la fait vivre.",
-      adminAlt: "Capture de l’administration Odyssea Vision",
-      explore: "Examiner l’interface",
-      principles: [
-        { title: "Structure", body: "Les contenus sont organisés selon les tâches réelles de l’équipe." },
-        { title: "Cohérence", body: "Des repères visuels relient les parties publique et privée du produit." },
-        { title: "Autonomie", body: "L’équipe peut faire évoluer l’expérience avec ses contenus." },
+      eyebrow: "03 / Systèmes & interfaces",
+      title: "L’expérience continue en coulisses.",
+      intro: "Le site public n’est qu’une partie du travail. Les outils qui l’alimentent méritent le même soin.",
+      project: "Odyssea Vision / Espace éditorial",
+      description: "L’administration rassemble récits, portfolio, vidéos et albums clients. Sa hiérarchie suit le travail de publication pour que l’équipe puisse faire vivre le site.",
+      points: [
+        { title: "Un seul espace", body: "Les contenus liés restent réunis au lieu d’être dispersés entre plusieurs outils." },
+        { title: "Des repères clairs", body: "Le tableau de bord rend les contenus récents et l’activité faciles à retrouver." },
+        { title: "Une continuité éditoriale", body: "L’interface privée soutient le site guidé par le récit que voient les visiteurs." },
       ],
-      more: "Autres explorations d’interfaces",
-      moreIntro: "Une sélection plus discrète de concepts produit, présentés comme études complémentaires.",
+      more: "Études d’interfaces précédentes",
+      moreIntro: "Une petite archive d’explorations d’interfaces produit.",
       concept: "Concept d’interface",
+      open: "Agrandir l’interface",
       close: "Fermer",
       previous: "Image précédente",
       next: "Image suivante",
@@ -67,71 +64,77 @@ export default function WorkSoftwareSection({ media }: Props) {
     { name: "Budget Insights", src: "/app/app31.webp" },
   ];
   const slides = [
-    ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: copy.adminAlt, title: "Odyssea Vision" }] : []),
+    ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: copy.project, title: "Odyssea Vision" }] : []),
     ...studies.map((study) => ({ src: study.src, alt: study.name, title: study.name })),
   ];
-  const open = (src: string) => {
+  const openImage = (src: string) => {
     const index = slides.findIndex((slide) => slide.src === src);
     if (index >= 0) setActiveIndex(index);
   };
 
   return (
-    <section id="systems" aria-labelledby="systems-title" className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28">
-      <div className="mx-auto mb-12 max-w-3xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
-        <h2 id="systems-title" className="mt-4 text-balance text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
-        <p className="mt-5 text-slate-600">{copy.intro}</p>
+    <section id="systems" aria-labelledby="systems-title" className="scroll-mt-28 px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
+      <div aria-hidden="true" className="relative mb-14 h-px bg-gradient-to-r from-transparent via-slate-900/15 to-transparent">
+        <div className="absolute left-1/2 top-1/2 h-10 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d5b5d3]/40 blur-2xl" />
       </div>
+      <WorkReveal className="mb-10 grid gap-4 md:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)] md:items-end">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
+          <h2 id="systems-title" className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
+        </div>
+        <p className="max-w-md leading-relaxed text-slate-600 md:justify-self-end">{copy.intro}</p>
+      </WorkReveal>
 
-      <article className="overflow-hidden rounded-[34px] border border-white/65 bg-white/50 p-5 shadow-[0_25px_70px_rgba(45,36,91,0.1)] backdrop-blur-md sm:p-8">
-        <div className="grid items-center gap-8 lg:grid-cols-[minmax(250px,0.4fr)_minmax(0,0.6fr)] lg:gap-12">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">{copy.projectType}</p>
-            <h3 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-4xl">{copy.adminTitle}</h3>
-            <p className="mt-5 leading-relaxed text-slate-600">{copy.adminBody}</p>
-            {media.odysseaAdmin && (
-              <button type="button" onClick={() => open(media.odysseaAdmin as string)} className="mt-7 rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-slate-800">
-                {copy.explore} <span aria-hidden="true" className="ml-3">↗</span>
-              </button>
-            )}
-          </div>
+      <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,0.58fr)_minmax(0,0.42fr)]">
+        <WorkReveal drift={16}>
           {media.odysseaAdmin ? (
-            <button type="button" onClick={() => open(media.odysseaAdmin as string)} className="block w-full focus-visible:rounded-[26px]" aria-label={copy.explore}>
-              <WorkMedia src={media.odysseaAdmin} alt={copy.adminAlt} label="Odyssea Vision / Admin" tone="admin" className="aspect-[16/10] w-full" />
+            <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open}>
+              <WorkMedia src={media.odysseaAdmin} alt={copy.project} label="Odyssea Vision / Admin" tone="admin" width={897} height={626} />
             </button>
           ) : (
-            <WorkMedia src={null} alt={copy.adminAlt} label="Odyssea Vision / Admin" tone="admin" className="aspect-[16/10] w-full" />
+            <WorkMedia src={null} alt={copy.project} label="Odyssea Vision / Admin" tone="admin" width={897} height={626} />
           )}
-        </div>
-        <div className="mt-8 grid gap-3 border-t border-slate-900/10 pt-8 md:grid-cols-3">
-          {copy.principles.map((principle, index) => (
-            <div key={principle.title} className="rounded-2xl bg-white/65 p-5">
-              <p className="text-xs font-semibold tracking-[0.16em] text-slate-500">0{index + 1}</p>
-              <h4 className="mt-3 font-semibold text-slate-950">{principle.title}</h4>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{principle.body}</p>
+        </WorkReveal>
+        <WorkReveal drift={-16} delay={0.08}>
+          <div className="flex h-full flex-col rounded-[26px] border border-white/75 bg-white/50 p-6 backdrop-blur-xl sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{copy.project}</p>
+            <p className="mt-4 text-base leading-relaxed text-slate-700">{copy.description}</p>
+            <div className="mt-auto pt-6">
+              {copy.points.map((point, index) => (
+                <div key={point.title} className="grid grid-cols-[32px_1fr] gap-3 border-t border-slate-900/10 py-3">
+                  <span className="pt-0.5 text-xs font-semibold text-slate-500">0{index + 1}</span>
+                  <div>
+                    <h3 className="font-semibold text-slate-950">{point.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600">{point.body}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </article>
+          </div>
+        </WorkReveal>
+      </div>
 
-      <details className="group mt-12 rounded-[28px] border border-white/65 bg-white/45 p-5 backdrop-blur-md sm:p-7">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-lg font-semibold text-slate-950 marker:hidden">
-          {copy.more}
-          <span aria-hidden="true" className="text-2xl font-light transition-transform group-open:rotate-45">+</span>
-        </summary>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">{copy.moreIntro}</p>
-        <div className="mt-7 grid gap-4 sm:grid-cols-3">
-          {studies.map((study) => (
-            <button key={study.name} type="button" onClick={() => open(study.src)} className="rounded-2xl border border-slate-900/10 bg-white/70 p-4 text-left transition hover:bg-white" aria-label={copy.explore + " — " + study.name}>
-              <div className="relative mx-auto aspect-[9/15] max-w-[210px] overflow-hidden rounded-xl bg-slate-100">
-                <Image src={study.src} alt={study.name} fill sizes="210px" className="object-contain" />
-              </div>
-              <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{copy.concept}</p>
-              <h4 className="mt-1 font-semibold text-slate-950">{study.name}</h4>
-            </button>
-          ))}
-        </div>
-      </details>
+      <WorkReveal className="mt-12">
+        <details className="group rounded-[24px] border border-white/70 bg-white/40 px-5 py-5 backdrop-blur-md sm:px-7">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-base font-semibold text-slate-950 marker:hidden">
+            <span>{copy.more}</span>
+            <span aria-hidden="true" className="text-2xl font-light transition-transform group-open:rotate-45">+</span>
+          </summary>
+          <p className="mt-2 text-sm text-slate-600">{copy.moreIntro}</p>
+          <div className="mt-6 grid gap-4 border-t border-slate-900/10 pt-6 sm:grid-cols-3">
+            {studies.map((study) => (
+              <button key={study.name} type="button" onClick={() => openImage(study.src)} className="rounded-[20px] border border-white/75 bg-white/65 p-4 text-left transition hover:bg-white" aria-label={copy.open + " — " + study.name}>
+                <div className="relative mx-auto aspect-[9/15] max-w-[200px] overflow-hidden rounded-xl bg-slate-100">
+                  <Image src={study.src} alt={study.name} fill sizes="200px" className="object-contain" />
+                </div>
+                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{copy.concept}</p>
+                <h3 className="mt-1 font-semibold text-slate-950">{study.name}</h3>
+              </button>
+            ))}
+          </div>
+        </details>
+      </WorkReveal>
+
       <WorkLightbox slides={slides} index={activeIndex ?? 0} open={activeIndex !== null} sectionLabel={copy.eyebrow} onClose={() => setActiveIndex(null)} labels={copy} />
     </section>
   );
