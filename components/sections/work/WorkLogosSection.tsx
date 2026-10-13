@@ -62,7 +62,7 @@ export default function WorkLogosSection({ media }: Props) {
     if (!container) return;
     const updateStride = () => {
       const firstRow = container.querySelector<HTMLElement>("[data-logo-row]");
-      if (firstRow) setRowStride(firstRow.getBoundingClientRect().height + 12);
+      if (firstRow) setRowStride(firstRow.offsetHeight + 12);
     };
     updateStride();
     const observer = new ResizeObserver(updateStride);
