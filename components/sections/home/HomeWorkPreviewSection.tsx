@@ -1,420 +1,93 @@
 "use client";
-import { useVisualPreferences } from "@/hooks/useVisualPreferences";
-import { useAutoRail } from "@/hooks/useAutoRail";
-import { reveal } from "@/lib/motion";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+
+import Link from "next/link";
 import { useLang } from "@/hooks/useLang";
-import { useEffect, useState, useRef } from "react";
-import type { WorkImage } from "@/types/work";
+import WorkMedia from "@/components/work/WorkMedia";
+import type { SelectedWorkMedia } from "@/types/selectedWork";
 
-type HomeWorkPreviewSectionProps = {
-  logos: WorkImage[];
-  softwares: WorkImage[]; // on garde pour la signature
-  landings?: WorkImage[];
-};
+type Props = { media: SelectedWorkMedia };
 
-// Préviews software : /public/app/app11.png → app61.png (1ère page de chaque app)
-const APP_PREVIEWS: WorkImage[] = Array.from({ length: 6 }, (_, i) => {
-  const appId = i + 1;
-  return {
-    src: `/app/app${appId}1.webp`,
-    alt: `App 0${appId} – main screen`,
-  };
-});
-
-// Préviews landing : /public/landing/designed1.webp → designed8.png
-const LANDING_PREVIEWS: WorkImage[] = Array.from({ length: 8 }, (_, i) => {
-  const idx = i + 1;
-  return {
-    src: `/landing/designed${idx}.webp`,
-    alt: `Landing page ${idx}`,
-  };
-});
-
-export default function HomeWorkPreviewSection({
-  logos,
-  softwares, // eslint-disable-line @typescript-eslint/no-unused-vars
-  landings, // eslint-disable-line @typescript-eslint/no-unused-vars
-}: HomeWorkPreviewSectionProps) {
+export default function HomeWorkPreviewSection({ media }: Props) {
   const { lang } = useLang();
-  const { reducedMotion, visible } = useVisualPreferences();
-  const autoplay = visible && !reducedMotion;
-
-  const t = {
+  const copy = {
     en: {
-      kicker: "Selected work",
-      title: "Logos & product visuals",
-      cta: "View full work",
-      logosLabel: "Logos",
-      softwareLabel: "Software UI",
-      landingLabel: "Landing pages",
+      eyebrow: "Selected work",
+      title: "A few worlds worth exploring.",
+      intro: "From editorial websites to distinctive marks and useful interfaces. See the work with room to notice the details.",
+      featured: "Featured project / website",
+      odyssea: "A place for wild stories to live.",
+      odysseaBody: "Odyssea Vision brings wildlife photography, film and field stories into one editorial experience.",
+      viewCase: "Explore the work",
+      identity: "Identity",
+      identityTitle: "Symbols with a story.",
+      identityBody: "Four brands, four different visual worlds.",
+      system: "Digital systems",
+      systemTitle: "Beautiful on the surface. Useful behind it.",
+      systemBody: "The Odyssea editorial interface connects the experience to the team’s daily work.",
+      all: "View all selected work",
     },
     fr: {
-      kicker: "Réalisations",
-      title: "Logos & interfaces produit",
-      cta: "Voir tout le travail",
-      logosLabel: "Logos",
-      softwareLabel: "UI logiciel",
-      landingLabel: "Landing pages",
+      eyebrow: "Projets sélectionnés",
+      title: "Quelques univers à explorer.",
+      intro: "Sites éditoriaux, signes distinctifs et interfaces utiles. Des projets présentés avec assez d’espace pour en voir les détails.",
+      featured: "Projet à la une / site web",
+      odyssea: "Un lieu pour raconter le vivant.",
+      odysseaBody: "Odyssea Vision rassemble photographie animalière, films et récits de terrain dans une expérience éditoriale.",
+      viewCase: "Explorer le projet",
+      identity: "Identité",
+      identityTitle: "Des symboles qui racontent.",
+      identityBody: "Quatre marques, quatre univers visuels différents.",
+      system: "Systèmes digitaux",
+      systemTitle: "Beau en surface. Utile en coulisses.",
+      systemBody: "L’interface éditoriale d’Odyssea relie l’expérience au travail quotidien de l’équipe.",
+      all: "Voir tous les projets",
     },
   }[lang];
 
-  const logoImages = logos ?? [];
-  const landingImages = LANDING_PREVIEWS;
-  const softwareImages = APP_PREVIEWS;
-
-  // Effet hover commun pour les 3 cartes (desktop)
-  const hoverCard = {
-    y: -8,
-    scale: 1.01,
-    boxShadow: "0 24px 48px rgba(70,49,110,0.16)",
-    transition: { type: "spring" as const, stiffness: 240, damping: 24 },
-  };
-
-  // ----- Auto-carrousel MOBILE pour les 3 colonnes -----
-  const mobileRailRef = useRef<HTMLDivElement | null>(null);
-  const columnKeys = ["logos", "landing", "software"] as const;
-  const loopColumns = [...columnKeys, ...columnKeys]; // duplication pour loop fluide
-
-  useAutoRail(mobileRailRef, loopColumns.length);
-
-  // ----- LogosCard : timer local (toutes les 6s, pas de décalage) -----
-  const LogosCard = () => {
-    const [logoIndex, setLogoIndex] = useState(0);
-
-    useEffect(() => {
-      if (!autoplay || logoImages.length <= 1) return;
-      const interval = window.setInterval(() => {
-        setLogoIndex((prev) =>
-          logoImages.length ? (prev + 2) % logoImages.length : prev,
-        );
-      }, 6000);
-      return () => clearInterval(interval);
-    }, [logoImages.length, autoplay]);
-
-    const logo1 =
-      logoImages.length > 0
-        ? logoImages[logoIndex % logoImages.length]
-        : null;
-    const logo2 =
-      logoImages.length > 1
-        ? logoImages[(logoIndex + 1) % logoImages.length]
-        : logo1;
-
-    return (
-      <motion.a
-        href="/work"
-        aria-label={t.logosLabel}
-        whileHover={hoverCard}
-        className="
-          rounded-3xl bg-white
-          border border-slate-200/70
-          px-4 py-4 sm:px-5 sm:py-5
-          flex flex-col gap-3
-          cursor-pointer
-        "
-      >
-        <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-slate-500">
-          {t.logosLabel}
-        </p>
-        <div className="relative w-full max-w-sm mx-auto aspect-[3/4] md:aspect-[9/16] overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={logoIndex}
-              initial={{ x: 40, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -40, opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="absolute inset-0 flex flex-col gap-3"
-            >
-              {logo1 && (
-                <div className="relative flex-1 rounded-2xl overflow-hidden shadow-sm">
-                  <Image
-                    src={logo1.src}
-                    alt={logo1.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
-                  />
-                </div>
-              )}
-              {logo2 && (
-                <div className="relative flex-1 rounded-2xl overflow-hidden shadow-sm">
-                  <Image
-                    src={logo2.src}
-                    alt={logo2.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
-                  />
-                </div>
-              )}
-              {!logo1 && (
-                <div className="flex-1 rounded-2xl border border-dashed flex items-center justify-center text-xs text-slate-400">
-                  (Logos coming soon)
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </motion.a>
-    );
-  };
-
-  // ----- LandingCard : timer local (décalé de 2s, puis toutes les 6s) -----
-  const LandingCard = () => {
-    const [landingIndex, setLandingIndex] = useState(0);
-
-    useEffect(() => {
-      if (!autoplay || !landingImages.length) return;
-
-      let interval: number | undefined;
-      const timeout = window.setTimeout(() => {
-        interval = window.setInterval(() => {
-          setLandingIndex((prev) =>
-            landingImages.length ? (prev + 1) % landingImages.length : prev,
-          );
-        }, 6000);
-      }, 2000);
-
-      return () => {
-        clearTimeout(timeout);
-        if (interval) clearInterval(interval);
-      };
-    }, [landingImages.length, autoplay]);
-
-    const currentLanding =
-      landingImages.length > 0
-        ? landingImages[landingIndex % landingImages.length]
-        : null;
-
-    return (
-      <motion.a
-        href="/work"
-        aria-label={t.landingLabel}
-        whileHover={hoverCard}
-        className="
-          rounded-3xl bg-white
-          border border-slate-200/70
-          px-4 py-4 sm:px-5 sm:py-5
-          flex flex-col gap-3
-          cursor-pointer
-        "
-      >
-        <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-slate-500">
-          {t.landingLabel}
-        </p>
-        <div className="relative w-full max-w-sm mx-auto aspect-[3/4] md:aspect-[9/16] overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={landingIndex}
-              initial={{ x: 40, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -40, opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="absolute inset-0"
-            >
-              {currentLanding ? (
-                <div className="relative h-full w-full rounded-2xl overflow-hidden">
-                  <Image
-                    src={currentLanding.src}
-                    alt={currentLanding.alt}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
-                  />
-                </div>
-              ) : (
-                <div className="h-full rounded-2xl border border-dashed flex items-center justify-center text-xs text-slate-400">
-                  (Landing previews coming soon)
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </motion.a>
-    );
-  };
-
-  // ----- SoftwareCard : timer local (décalé de 4s, puis toutes les 6s) -----
-  const SoftwareCard = () => {
-    const [softwareIndex, setSoftwareIndex] = useState(0);
-
-    useEffect(() => {
-      if (!autoplay || !softwareImages.length) return;
-
-      let interval: number | undefined;
-      const timeout = window.setTimeout(() => {
-        interval = window.setInterval(() => {
-          setSoftwareIndex((prev) =>
-            softwareImages.length ? (prev + 1) % softwareImages.length : prev,
-          );
-        }, 6000);
-      }, 4000);
-
-      return () => {
-        clearTimeout(timeout);
-        if (interval) clearInterval(interval);
-      };
-    }, [softwareImages.length, autoplay]);
-
-    const currentSoftware =
-      softwareImages.length > 0
-        ? softwareImages[softwareIndex % softwareImages.length]
-        : null;
-
-    return (
-      <motion.a
-        href="/work"
-        aria-label={t.softwareLabel}
-        whileHover={hoverCard}
-        className="
-          rounded-3xl bg-white
-          border border-slate-200/70
-          px-4 py-4 sm:px-5 sm:py-5
-          flex flex-col gap-3
-          cursor-pointer
-        "
-      >
-        <p className="text-[11px] font-semibold tracking-[0.22em] uppercase text-slate-500">
-          {t.softwareLabel}
-        </p>
-        <div className="relative w-full max-w-sm mx-auto aspect-[3/4] md:aspect-[9/16] overflow-hidden rounded-2xl">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={softwareIndex}
-              initial={{ x: 40, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -40, opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="absolute inset-0"
-            >
-              {currentSoftware ? (
-                <Image
-                  src={currentSoftware.src}
-                  alt={currentSoftware.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, 82vw"
-                />
-              ) : (
-                <div className="h-full w-full flex items-center justify-center text-xs text-slate-400">
-                  (Product UI coming soon)
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </motion.a>
-    );
-  };
-
   return (
-    <section aria-labelledby="home-work-preview-title">
-      <div className="space-y-8">
-        {/* Header (simple : kicker + titre) */}
-        <motion.div
-          {...reveal}
-          className="max-w-3xl mx-auto text-center space-y-4"
-        >
-          <p className="text-xs font-medium tracking-[0.25em] uppercase text-slate-500">
-            {t.kicker}
-          </p>
-          <h2
-            id="home-work-preview-title"
-            className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-slate-900"
-          >
-            {t.title}
-          </h2>
-        </motion.div>
+    <section aria-labelledby="home-work-preview-title" className="py-10 sm:py-16">
+      <div className="mx-auto mb-10 max-w-3xl text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
+        <h2 id="home-work-preview-title" className="mt-4 text-balance text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
+        <p className="mt-5 text-slate-600">{copy.intro}</p>
+      </div>
 
-        {/* 💻 Desktop / tablette : grande carte avec 3 colonnes */}
-        <motion.div
-          {...reveal}
-          className="
-            hidden
-            md:block
-          "
-        >
-          <div
-            className="
-              grid gap-4 sm:gap-5
-              md:grid-cols-3
-            "
-          >
-            <LogosCard />
-            <LandingCard />
-            <SoftwareCard />
+      <Link href="/work#websites" className="group block rounded-[34px] border border-white/65 bg-white/50 p-4 shadow-[0_26px_70px_rgba(45,36,91,0.1)] backdrop-blur-md transition hover:bg-white/65 sm:p-6">
+        <div className="grid items-center gap-6 lg:grid-cols-[minmax(220px,0.36fr)_minmax(0,0.64fr)] lg:gap-9">
+          <div className="px-2 py-3 sm:px-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">{copy.featured}</p>
+            <h3 className="mt-4 text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-4xl">{copy.odyssea}</h3>
+            <p className="mt-4 leading-relaxed text-slate-600">{copy.odysseaBody}</p>
+            <span className="mt-7 inline-flex items-center rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white transition group-hover:bg-slate-800">
+              {copy.viewCase} <span aria-hidden="true" className="ml-3">↗</span>
+            </span>
           </div>
-          {/* CTA desktop dans la carte */}
-          <div className="pt-6 flex justify-center">
-            <a
-              href="/work"
-              className="
-                inline-flex items-center gap-2
-                rounded-full
-                px-8 sm:px-10 py-3.5 sm:py-4
-                text-sm sm:text-base font-semibold
-                bg-white text-black
-                shadow-[0_06px_15px_rgba(15,23,42,0.45)]
-                hover:bg-white
-                hover:shadow-[0_10px_15px_rgba(15,23,42,0.55)]
-                transition
-              "
-            >
-              {t.cta}
-            </a>
-          </div>
-        </motion.div>
+          <WorkMedia src={media.odysseaHome} alt="Odyssea Vision website" label="Odyssea Vision" tone="ocean" className="aspect-[16/10] w-full" />
+        </div>
+      </Link>
 
-        {/* 📱 Mobile : carrousel horizontal des 3 colonnes */}
-        <motion.div
-          {...reveal}
-          className="md:hidden"
-        >
-          <div
-            ref={mobileRailRef}
-            data-lenis-prevent
-            className="
-              flex gap-4
-              overflow-x-auto
-              no-scrollbar
-              px-1 py-2
-            "
-          >
-            {loopColumns.map((key, idx) => (
-              <div
-                key={`${key}-${idx}`}
-                className="home-work-mobile-card shrink-0 w-[82%] max-w-xs"
-              >
-                {key === "logos" && <LogosCard />}
-                {key === "landing" && <LandingCard />}
-                {key === "software" && <SoftwareCard />}
-              </div>
-            ))}
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
+        <Link href="/work#identities" className="group rounded-[30px] border border-white/65 bg-white/45 p-5 backdrop-blur-md transition hover:bg-white/65 sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.17em] text-slate-600">{copy.identity}</p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <WorkMedia src={media.terraLogo} alt="Terra Sculptura logo" label="Terra Sculptura" tone="forest" className="aspect-square w-full" />
+            <WorkMedia src={media.odysseaLogo} alt="Odyssea Vision logo" label="Odyssea Vision" tone="ocean" className="aspect-square w-full" />
           </div>
-          {/* CTA mobile sous le carrousel */}
-          <div className="pt-5 flex justify-center">
-            <a
-              href="/work"
-              className="
-                inline-flex items-center gap-2
-                rounded-full
-                px-8 py-3.5
-                text-sm font-semibold
-                bg-white text-black
-                shadow-[0_16px_45px_rgba(15,23,42,0.45)]
-                hover:bg-white
-                hover:shadow-[0_20px_60px_rgba(15,23,42,0.55)]
-                transition
-              "
-            >
-              {t.cta}
-              <span aria-hidden>🫆</span>
-            </a>
-          </div>
-        </motion.div>
+          <h3 className="mt-5 text-xl font-semibold text-slate-950">{copy.identityTitle}</h3>
+          <p className="mt-2 text-sm text-slate-600">{copy.identityBody}</p>
+        </Link>
+        <Link href="/work#systems" className="group rounded-[30px] border border-white/65 bg-white/45 p-5 backdrop-blur-md transition hover:bg-white/65 sm:p-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.17em] text-slate-600">{copy.system}</p>
+          <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision admin interface" label="Odyssea Vision / Admin" tone="admin" className="mt-5 aspect-[2/1] w-full" />
+          <h3 className="mt-5 text-xl font-semibold text-slate-950">{copy.systemTitle}</h3>
+          <p className="mt-2 text-sm text-slate-600">{copy.systemBody}</p>
+        </Link>
+      </div>
+
+      <div className="mt-10 text-center">
+        <Link href="/work" className="inline-flex items-center rounded-full border border-white/75 bg-white px-7 py-3.5 text-sm font-semibold text-slate-950 shadow-[0_12px_32px_rgba(45,36,91,0.12)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_40px_rgba(45,36,91,0.18)]">
+          {copy.all} <span aria-hidden="true" className="ml-3">↗</span>
+        </Link>
       </div>
     </section>
   );

@@ -1,99 +1,53 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 
 export default function WorkIntroSection() {
   const { lang } = useLang();
-
-  const t = {
+  const copy = {
     en: {
-      pretitre: "Selected work • Product & brand",
-      line1: "Visual systems for",
-      line2: "digital products.",
-      subtitle:
-        "Logos, landing pages, product UI and motion pieces shaped for real brands and teams.",
-      ctaPrimary: "Back to homepage",
-      ctaSecondary: "Book a call",
+      eyebrow: "Selected work",
+      title: "Work made to be explored.",
+      intro: "Real projects and thoughtful concepts across identity, websites and useful systems.",
+      websites: "Web experiences",
+      identities: "Identities",
+      systems: "Systems",
     },
     fr: {
-      pretitre: "Travaux sélectionnés • Produit & marque",
-      line1: "Systèmes visuels pour",
-      line2: "produits digitaux.",
-      subtitle:
-        "Logos, landing pages, interfaces produit et animations conçus pour des projets concrets.",
-      ctaPrimary: "Retour à l’accueil",
-      ctaSecondary: "Réserver un appel",
+      eyebrow: "Projets sélectionnés",
+      title: "Des projets à explorer.",
+      intro: "Des projets réels et des concepts travaillés, entre identité, sites web et outils utiles.",
+      websites: "Expériences web",
+      identities: "Identités",
+      systems: "Systèmes",
     },
   }[lang];
 
   return (
-    <section
-      id="work"
-      aria-labelledby="work-title"
-      className="relative w-full flex items-center justify-center pb-20"
-    >
-      <div className="max-w-3xl mx-auto text-center px-6">
-        {/* Pré-titre */}
-        <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.6 }}
-          className="text-sm text-slate-600 mb-3"
-        >
-          {t.pretitre}
-        </motion.p>
-
-        {/* Titre */}
-        <motion.h1
-          id="work-title"
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6"
-        >
-          {t.line1}
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-500">
-            {t.line2}
-          </span>
-        </motion.h1>
-
-        {/* Sous-titre */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ delay: 0.25, duration: 0.7 }}
-          className="text-base sm:text-lg text-slate-700 leading-relaxed mb-10 max-w-2xl mx-auto"
-        >
-          {t.subtitle}
-        </motion.p>
-
-        {/* CTA (optionnels, même style que le hero) */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ delay: 0.4, duration: 0.7 }}
-          className="flex items-center justify-center gap-4"
-        >
-          <a
-            href="/#hero"
-            className="px-6 py-3 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition whitespace-nowrap"
-          >
-            {t.ctaPrimary}
-          </a>
-          <a
-            href="/#contact"
-            className="px-6 py-3 rounded-full border border-slate-300 font-medium hover:bg-slate-100 transition whitespace-nowrap"
-          >
-            {t.ctaSecondary}
-          </a>
-        </motion.div>
-      </div>
+    <section id="work" aria-labelledby="work-title" className="px-5 pb-24 pt-12 text-center sm:px-8 sm:pt-20">
+      <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-slate-600">
+        {copy.eyebrow}
+      </p>
+      <h1
+        id="work-title"
+        className="mx-auto max-w-4xl text-balance text-4xl font-semibold tracking-[-0.055em] text-slate-950 sm:text-6xl lg:text-7xl"
+      >
+        {copy.title}
+      </h1>
+      <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+        {copy.intro}
+      </p>
+      <nav aria-label={copy.eyebrow} className="mt-10 flex flex-wrap justify-center gap-3">
+        <a href="#websites" className="rounded-full border border-white/70 bg-white/55 px-5 py-2.5 text-sm text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white">
+          {copy.websites}
+        </a>
+        <a href="#identities" className="rounded-full border border-white/70 bg-white/55 px-5 py-2.5 text-sm text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white">
+          {copy.identities}
+        </a>
+        <a href="#systems" className="rounded-full border border-white/70 bg-white/55 px-5 py-2.5 text-sm text-slate-800 shadow-sm backdrop-blur-md transition hover:bg-white">
+          {copy.systems}
+        </a>
+      </nav>
     </section>
   );
 }

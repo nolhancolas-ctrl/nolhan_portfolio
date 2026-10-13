@@ -7,39 +7,20 @@ import FaqSection from "@/components/sections/home/HomeFaqSection";
 import PricingSection from "@/components/sections/home/HomePricingSection";
 import MainNavbar from "@/components/layout/MainNavbar";
 import HomeWorkPreviewSection from "@/components/sections/home/HomeWorkPreviewSection";
-import { getLogoImages, getSoftwareImages } from "@/lib/workAssets";
+import { getSelectedWorkMedia } from "@/lib/selectedWorkAssets";
 
 export default function Page() {
-  const logos = getLogoImages();
-  const softwares = getSoftwareImages();
+  const media = getSelectedWorkMedia();
 
   return (
     <>
       <MainNavbar />
-
-      <PageSection id="hero">
-        <HeroSection />
-      </PageSection>
-
-      <PageSection id="process">
-        <ProcessSection />
-      </PageSection>
-
-      <PageSection id="work-preview">
-        <HomeWorkPreviewSection logos={logos} softwares={softwares} />
-      </PageSection>
-
-      <PageSection id="pricing">
-        <PricingSection />
-      </PageSection>
-
-      <PageSection id="faq">
-        <FaqSection />
-      </PageSection>
-
-      <PageSection id="contact" className="pb-18">
-        <ContactSection />
-      </PageSection>
+      <PageSection id="hero"><HeroSection /></PageSection>
+      <PageSection id="process"><ProcessSection /></PageSection>
+      <PageSection id="work-preview"><HomeWorkPreviewSection media={media} /></PageSection>
+      <PageSection id="pricing"><PricingSection /></PageSection>
+      <PageSection id="faq"><FaqSection /></PageSection>
+      <PageSection id="contact" className="pb-18"><ContactSection /></PageSection>
     </>
   );
 }
