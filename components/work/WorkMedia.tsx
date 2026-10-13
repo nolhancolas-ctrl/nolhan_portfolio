@@ -36,7 +36,7 @@ export default function WorkMedia({
 }: Props) {
   const frame = fit === "square"
     ? "relative aspect-square overflow-hidden rounded-[20px]"
-    : "relative aspect-[897/626] overflow-hidden rounded-[20px] lg:aspect-auto lg:h-full";
+    : "relative overflow-hidden rounded-[20px] lg:aspect-auto lg:h-full";
 
   return (
     <div className={`work-media overflow-hidden rounded-[26px] border border-white/80 bg-white/55 p-1.5 shadow-[0_18px_50px_rgba(53,39,93,0.10)] backdrop-blur-md ${fit === "stretch" ? "lg:h-full" : ""} ${className}`}>
@@ -53,7 +53,7 @@ export default function WorkMedia({
           />
         </div>
       ) : (
-        <div className={`${frame} ${fit === "stretch" ? "bg-[#f5f2eb]" : ""}`}>
+        <div className={`${frame} ${fit === "stretch" ? "bg-[#f5f2eb]" : ""}`} style={fit === "stretch" ? { aspectRatio: `${width} / ${height}` } : undefined}>
           <Image
             src={src}
             alt={alt}
