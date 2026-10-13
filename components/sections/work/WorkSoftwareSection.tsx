@@ -19,10 +19,9 @@ export default function WorkSoftwareSection({ media }: Props) {
     en: {
       eyebrow: "Systems & interfaces",
       title: "A site they can run themselves.",
-      intro: "A publishing workspace that gives the Odyssea team control of its own stories.",
       details: [
-        { label: "01 / Public site", title: "From draft to story", body: "Published stories have room to be explored.", image: "stories" as const },
-        { label: "02 / Admin", title: "Content stays in reach", body: "Recent material and activity are easy to find.", image: "admin" as const },
+        { title: "Stories management", image: "stories" as const },
+        { title: "Portfolio management", image: "portfolio" as const },
       ],
       outcomes: "The outcome",
       benefits: [
@@ -30,8 +29,6 @@ export default function WorkSoftwareSection({ media }: Props) {
         { title: "Less intervention", body: "The goal is a site they can keep current themselves. I step in for exceptional changes, not routine updates.", icon: "handoff" as const },
       ],
       more: "Explore more interface studies",
-      moreIntro: "A compact archive of product UI explorations.",
-      concept: "Interface concept",
       open: "Enlarge interface",
       close: "Close",
       previous: "Previous image",
@@ -42,10 +39,9 @@ export default function WorkSoftwareSection({ media }: Props) {
     fr: {
       eyebrow: "Systèmes & interfaces",
       title: "Un site qu’ils font vivre eux-mêmes.",
-      intro: "Un espace de publication qui laisse l’équipe Odyssea piloter ses propres récits.",
       details: [
-        { label: "01 / Site public", title: "Du brouillon au récit", body: "Les histoires publiées ont l’espace pour être explorées.", image: "stories" as const },
-        { label: "02 / Administration", title: "Le contenu à portée de main", body: "Les éléments récents et l’activité sont faciles à retrouver.", image: "admin" as const },
+        { title: "Gestion des récits", image: "stories" as const },
+        { title: "Gestion du portfolio", image: "portfolio" as const },
       ],
       outcomes: "Le résultat",
       benefits: [
@@ -53,8 +49,6 @@ export default function WorkSoftwareSection({ media }: Props) {
         { title: "Moins d’interventions", body: "Le but est qu’elle garde le site à jour elle-même. Je reviens pour les changements exceptionnels, pas pour les publications ordinaires.", icon: "handoff" as const },
       ],
       more: "Voir d’autres études d’interfaces",
-      moreIntro: "Une petite archive d’explorations d’interfaces produit.",
-      concept: "Concept d’interface",
       open: "Agrandir l’interface",
       close: "Fermer",
       previous: "Image précédente",
@@ -65,8 +59,9 @@ export default function WorkSoftwareSection({ media }: Props) {
   }[lang];
 
   const slides = [
-    ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: "Odyssea Vision admin dashboard", title: "Odyssea Vision / Admin" }] : []),
-    ...(media.odysseaStories ? [{ src: media.odysseaStories, alt: "Odyssea Vision public stories", title: "Odyssea Vision / Stories" }] : []),
+    ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: "Odyssea Vision admin dashboard", title: "Odyssea Vision / Dashboard" }] : []),
+    ...(media.odysseaAdminStories ? [{ src: media.odysseaAdminStories, alt: "Odyssea Vision stories management", title: "Odyssea Vision / Stories" }] : []),
+    ...(media.odysseaAdminPortfolio ? [{ src: media.odysseaAdminPortfolio, alt: "Odyssea Vision portfolio management", title: "Odyssea Vision / Portfolio" }] : []),
   ];
   const openImage = (src: string) => {
     const index = slides.findIndex((slide) => slide.src === src);
@@ -83,35 +78,29 @@ export default function WorkSoftwareSection({ media }: Props) {
         </div>
       </WorkReveal>
 
-      <div className="grid items-stretch gap-8 sm:gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+      <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
         <WorkReveal drift={15} className="h-full">
           {media.odysseaAdmin ? (
-            <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px] lg:h-full" aria-label={copy.open}>
-              <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision editorial dashboard" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} fit="stretch" />
+            <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block h-full w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — Dashboard"}>
+              <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision admin dashboard" label="Odyssea Vision / Dashboard" tone="admin" width={1917} height={866} fit="stretch" />
             </button>
           ) : (
-            <WorkMedia src={null} alt="Odyssea Vision editorial dashboard" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} fit="stretch" />
+            <WorkMedia src={null} alt="Odyssea Vision admin dashboard" label="Odyssea Vision / Dashboard" tone="admin" width={1917} height={866} fit="stretch" />
           )}
         </WorkReveal>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 lg:grid-rows-2">
           {copy.details.map((detail, index) => {
-            const detailSrc = detail.image === "stories" ? media.odysseaStories : media.odysseaAdmin;
+            const detailSrc = detail.image === "stories" ? media.odysseaAdminStories : media.odysseaAdminPortfolio;
             return (
-              <WorkReveal key={detail.label} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12} className="h-full">
-                <article className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-2 backdrop-blur-md">
+              <WorkReveal key={detail.image} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12} className="h-full">
+                <div className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-2 backdrop-blur-md">
                   {detailSrc ? (
-                    <button type="button" onClick={() => openImage(detailSrc)} className="relative block h-44 w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#ebe8df] sm:h-48 lg:h-full lg:min-h-[180px]" aria-label={copy.open + " — " + detail.title}>
-                      <Image
-                        src={detailSrc}
-                        alt={detail.title}
-                        fill
-                        sizes="(min-width: 1024px) 360px, (min-width: 640px) 44vw, 90vw"
-                        className={`work-detail-image object-cover ${detail.image === "stories" ? "object-center" : "object-[50%_88%]"}`}
-                      />
+                    <button type="button" onClick={() => openImage(detailSrc)} className="relative block aspect-[1917/866] w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#f5f0e6] lg:aspect-auto lg:h-full" aria-label={copy.open + " — " + detail.title}>
+                      <Image src={detailSrc} alt={detail.title} fill sizes="(min-width: 1024px) 360px, (min-width: 640px) 44vw, 90vw" className="work-detail-image object-contain" />
                     </button>
-                  ) : <div className="h-44 rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] sm:h-48 lg:h-full lg:min-h-[180px]" />}
-                </article>
+                  ) : <div className="aspect-[1917/866] rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] lg:aspect-auto lg:h-full" />}
+                </div>
               </WorkReveal>
             );
           })}
@@ -135,7 +124,7 @@ export default function WorkSoftwareSection({ media }: Props) {
 
       <WorkReveal className="mt-10 text-center">
         <a
-          href="https://www.figma.com/design/01YyxmIktchrjQPweMKuaJ/Nolhan-Colas-%E2%80%94-Design-Practice---Selected-Work?node-id=25-674&t=LU0ey9K9PYJ5x2Xe-1"
+          href="https://www.figma.com/design/01YyxmIktchrjQPweMKuaJ/Nolhan-Colas-%E2%80%94-Design-Practice---Selected-Work?node-id=3-2&t=3PzA25MwnP2bpY8n-1"
           target="_blank"
           rel="noreferrer"
           className="inline-flex rounded-full border border-white/80 bg-white/75 px-6 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white"
