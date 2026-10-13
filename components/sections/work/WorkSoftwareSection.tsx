@@ -6,6 +6,7 @@ import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia from "@/components/work/WorkMedia";
 import WorkReveal from "@/components/work/WorkReveal";
+import WorkExternalLink from "@/components/work/WorkExternalLink";
 import { SoftwareSymbol } from "@/components/work/SoftwareVisualAccent";
 import ServiceSculpture from "@/components/layout/visual/ServiceSculpture";
 import type { SelectedWorkMedia } from "@/types/selectedWork";
@@ -78,8 +79,9 @@ export default function WorkSoftwareSection({ media }: Props) {
         </div>
       </WorkReveal>
 
-      <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
-        <WorkReveal drift={15} className="h-full">
+      <WorkReveal drift={15}>
+        <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+        <div className="h-full">
           {media.odysseaAdmin ? (
             <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block h-full w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — Dashboard"}>
               <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision admin dashboard" label="Odyssea Vision / Dashboard" tone="admin" width={1917} height={866} fit="stretch" />
@@ -87,13 +89,13 @@ export default function WorkSoftwareSection({ media }: Props) {
           ) : (
             <WorkMedia src={null} alt="Odyssea Vision admin dashboard" label="Odyssea Vision / Dashboard" tone="admin" width={1917} height={866} fit="stretch" />
           )}
-        </WorkReveal>
+        </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 lg:grid-rows-2">
-          {copy.details.map((detail, index) => {
+          {copy.details.map((detail) => {
             const detailSrc = detail.image === "stories" ? media.odysseaAdminStories : media.odysseaAdminPortfolio;
             return (
-              <WorkReveal key={detail.image} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12} className="h-full">
+              <div key={detail.image} className="h-full">
                 <div className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-2 backdrop-blur-md">
                   {detailSrc ? (
                     <button type="button" onClick={() => openImage(detailSrc)} className="relative block aspect-[1917/866] w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#f5f0e6] lg:aspect-auto lg:h-full" aria-label={copy.open + " — " + detail.title}>
@@ -101,11 +103,12 @@ export default function WorkSoftwareSection({ media }: Props) {
                     </button>
                   ) : <div className="aspect-[1917/866] rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] lg:aspect-auto lg:h-full" />}
                 </div>
-              </WorkReveal>
+              </div>
             );
           })}
         </div>
-      </div>
+        </div>
+      </WorkReveal>
 
       <WorkReveal className="mt-12">
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-600">{copy.outcomes}</p>
@@ -123,14 +126,9 @@ export default function WorkSoftwareSection({ media }: Props) {
       </WorkReveal>
 
       <WorkReveal className="mt-10 text-center">
-        <a
-          href="https://www.figma.com/design/01YyxmIktchrjQPweMKuaJ/Nolhan-Colas-%E2%80%94-Design-Practice---Selected-Work?node-id=3-2&t=3PzA25MwnP2bpY8n-1"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex rounded-full border border-white/80 bg-white/75 px-6 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white"
-        >
-          {copy.more} ↗
-        </a>
+        <WorkExternalLink href="https://www.figma.com/design/01YyxmIktchrjQPweMKuaJ/Nolhan-Colas-%E2%80%94-Design-Practice---Selected-Work?node-id=3-2&t=3PzA25MwnP2bpY8n-1">
+          {copy.more}
+        </WorkExternalLink>
       </WorkReveal>
 
       <WorkLightbox slides={slides} index={activeIndex ?? 0} open={activeIndex !== null} sectionLabel={copy.eyebrow} onClose={() => setActiveIndex(null)} labels={copy} />
