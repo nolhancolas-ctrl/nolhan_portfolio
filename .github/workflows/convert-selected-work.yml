@@ -1,0 +1,31 @@
+name: Convert selected work images
+on:
+  push:
+    branches:
+      - codex/selected-work-showcase
+    paths:
+      - "conversion-input/**"
+      - ".github/workflows/convert-selected-work.yml"
+permissions:
+  contents: write
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: node .github/scripts/convert-selected-work.cjs
+      - name: Commit converted images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/work/sites public/work/software
+          if ! git diff --cached --quiet; then
+            git commit -m "Add optimized selected work images [skip ci]"
+            git push
+          fi
+      - run: npm run build
