@@ -19,8 +19,6 @@ export default function WorkSoftwareSection({ media }: Props) {
       eyebrow: "03 / Systems & interfaces",
       title: "A site they can run themselves.",
       intro: "A publishing workspace that gives the Odyssea team control of its own stories.",
-      dashboard: "One view of what needs attention",
-      dashboardNote: "Recent stories, albums and activity stay visible.",
       details: [
         { label: "01 / Public site", title: "From draft to story", body: "Published stories have room to be explored.", image: "stories" as const },
         { label: "02 / Admin", title: "Content stays in reach", body: "Recent material and activity are easy to find.", image: "admin" as const },
@@ -44,8 +42,6 @@ export default function WorkSoftwareSection({ media }: Props) {
       eyebrow: "03 / Systèmes & interfaces",
       title: "Un site qu’ils font vivre eux-mêmes.",
       intro: "Un espace de publication qui laisse l’équipe Odyssea piloter ses propres récits.",
-      dashboard: "Une vue claire sur ce qui compte",
-      dashboardNote: "Récits récents, albums et activité restent visibles.",
       details: [
         { label: "01 / Site public", title: "Du brouillon au récit", body: "Les histoires publiées ont l’espace pour être explorées.", image: "stories" as const },
         { label: "02 / Administration", title: "Le contenu à portée de main", body: "Les éléments récents et l’activité sont faciles à retrouver.", image: "admin" as const },
@@ -98,29 +94,22 @@ export default function WorkSoftwareSection({ media }: Props) {
       </WorkReveal>
 
       <div className="grid items-stretch gap-8 sm:gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
-        <WorkReveal drift={15} className="flex flex-col">
+        <WorkReveal drift={15} className="h-full">
           {media.odysseaAdmin ? (
-            <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open}>
-              <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision editorial dashboard" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} />
+            <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px] lg:h-full" aria-label={copy.open}>
+              <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision editorial dashboard" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} fit="stretch" />
             </button>
           ) : (
-            <WorkMedia src={null} alt="Odyssea Vision editorial dashboard" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} />
+            <WorkMedia src={null} alt="Odyssea Vision editorial dashboard" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} fit="stretch" />
           )}
-          <div className="mt-4 flex items-start gap-3 px-1">
-            <SoftwareSymbol name="publish" className="h-9 w-9 shrink-0 rounded-xl" />
-            <div>
-              <h3 className="font-semibold text-slate-950">{copy.dashboard}</h3>
-              <p className="mt-0.5 text-sm text-slate-600">{copy.dashboardNote}</p>
-            </div>
-          </div>
         </WorkReveal>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 lg:grid-rows-2">
           {copy.details.map((detail, index) => {
             const detailSrc = detail.image === "stories" ? media.odysseaStories : media.odysseaAdmin;
             return (
-              <WorkReveal key={detail.label} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12}>
-                <article className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-3 backdrop-blur-md">
+              <WorkReveal key={detail.label} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12} className="h-full">
+                <article className="flex h-full flex-col overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-3 backdrop-blur-md">
                   {detailSrc ? (
                     <button type="button" onClick={() => openImage(detailSrc)} className="relative block h-36 w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#ebe8df] sm:h-40 lg:h-32" aria-label={copy.open + " — " + detail.title}>
                       <Image
@@ -128,7 +117,7 @@ export default function WorkSoftwareSection({ media }: Props) {
                         alt={detail.title}
                         fill
                         sizes="(min-width: 1024px) 360px, (min-width: 640px) 44vw, 90vw"
-                        className={`object-cover ${detail.image === "stories" ? "object-center" : "object-[50%_88%]"}`}
+                        className={`work-detail-image object-cover ${detail.image === "stories" ? "object-center" : "object-[50%_88%]"}`}
                       />
                     </button>
                   ) : <div className="h-36 rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] sm:h-40 lg:h-32" />}
@@ -170,7 +159,7 @@ export default function WorkSoftwareSection({ media }: Props) {
             {studies.map((study) => (
               <button key={study.name} type="button" onClick={() => openImage(study.src)} className="rounded-[20px] border border-white/75 bg-white/65 p-4 text-left transition hover:bg-white" aria-label={copy.open + " — " + study.name}>
                 <div className="relative mx-auto aspect-[9/15] max-w-[200px] overflow-hidden rounded-xl bg-slate-100">
-                  <Image src={study.src} alt={study.name} fill sizes="200px" className="object-contain" />
+                  <Image src={study.src} alt={study.name} fill sizes="200px" className="work-detail-image object-contain" />
                 </div>
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{copy.concept}</p>
                 <h3 className="mt-1 font-semibold text-slate-950">{study.name}</h3>
