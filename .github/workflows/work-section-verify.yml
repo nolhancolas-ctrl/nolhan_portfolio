@@ -1,0 +1,40 @@
+name: Temporary work section verification
+on:
+  push:
+    branches:
+      - codex/selected-work-showcase
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx --yes playwright@1.55.0 install --with-deps chromium
+      - name: Render work page
+        run: |
+          npm run start -- --port 3000 > /tmp/next.log 2>&1 &
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:3000/work > /dev/null; then break; fi
+            sleep 2
+          done
+          for asset in odyssea-admin.webp; do
+            curl -fsS -o /dev/null "http://127.0.0.1:3000/work/software/$asset"
+          done
+          for asset in atelier-chrome-craft.png aube-coffee.png odyssea-vision.png terra-sculptura.png; do
+            curl -fsS -o /dev/null "http://127.0.0.1:3000/logos/$asset"
+          done
+          npx --yes playwright@1.55.0 screenshot --browser chromium --viewport-size "1440,900" --full-page http://127.0.0.1:3000/work work-desktop.png
+          npx --yes playwright@1.55.0 screenshot --browser chromium --viewport-size "390,844" --full-page http://127.0.0.1:3000/work work-mobile.png
+      - uses: actions/upload-artifact@v4
+        with:
+          name: work-renders
+          path: |
+            work-desktop.png
+            work-mobile.png

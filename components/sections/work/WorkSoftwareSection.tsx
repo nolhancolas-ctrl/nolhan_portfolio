@@ -22,8 +22,8 @@ export default function WorkSoftwareSection({ media }: Props) {
       dashboard: "One view of what needs attention",
       dashboardNote: "Recent stories, albums and activity stay visible.",
       details: [
-        { label: "01 / Publishing", title: "Stories in the team's hands", body: "Create and update content in one place.", crop: "top" },
-        { label: "02 / Content", title: "Media stays organised", body: "Portfolio, videos and client albums share a clear structure.", crop: "bottom" },
+        { label: "01 / Public site", title: "From draft to story", body: "Published stories have room to be explored.", image: "stories" as const },
+        { label: "02 / Admin", title: "Content stays in reach", body: "Recent material and activity are easy to find.", image: "admin" as const },
       ],
       outcomes: "The outcome",
       benefits: [
@@ -47,8 +47,8 @@ export default function WorkSoftwareSection({ media }: Props) {
       dashboard: "Une vue claire sur ce qui compte",
       dashboardNote: "Récits récents, albums et activité restent visibles.",
       details: [
-        { label: "01 / Publication", title: "Les récits dans leurs mains", body: "Créer et mettre à jour au même endroit.", crop: "top" },
-        { label: "02 / Contenu", title: "Des médias organisés", body: "Portfolio, vidéos et albums clients suivent une structure claire.", crop: "bottom" },
+        { label: "01 / Site public", title: "Du brouillon au récit", body: "Les histoires publiées ont l’espace pour être explorées.", image: "stories" as const },
+        { label: "02 / Administration", title: "Le contenu à portée de main", body: "Les éléments récents et l’activité sont faciles à retrouver.", image: "admin" as const },
       ],
       outcomes: "Le résultat",
       benefits: [
@@ -73,7 +73,8 @@ export default function WorkSoftwareSection({ media }: Props) {
     { name: "Budget Insights", src: "/app/app31.webp" },
   ];
   const slides = [
-    ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: "Odyssea Vision admin dashboard", title: "Odyssea Vision" }] : []),
+    ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: "Odyssea Vision admin dashboard", title: "Odyssea Vision / Admin" }] : []),
+    ...(media.odysseaStories ? [{ src: media.odysseaStories, alt: "Odyssea Vision public stories", title: "Odyssea Vision / Stories" }] : []),
     ...studies.map((study) => ({ src: study.src, alt: study.name, title: study.name })),
   ];
   const openImage = (src: string) => {
@@ -115,28 +116,31 @@ export default function WorkSoftwareSection({ media }: Props) {
         </WorkReveal>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
-          {copy.details.map((detail, index) => (
-            <WorkReveal key={detail.label} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12}>
-              <article className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-3 backdrop-blur-md">
-                <div className="relative h-36 overflow-hidden rounded-[16px] bg-[#ebe8df] sm:h-40 lg:h-32">
-                  {media.odysseaAdmin ? (
-                    <Image
-                      src={media.odysseaAdmin}
-                      alt={detail.title}
-                      fill
-                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 44vw, 90vw"
-                      className={`object-cover ${detail.crop === "top" ? "object-[50%_8%]" : "object-[50%_88%]"}`}
-                    />
-                  ) : <div className="h-full w-full bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9]" />}
-                </div>
-                <div className="px-2 pb-2 pt-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">{detail.label}</p>
-                  <h3 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">{detail.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-slate-600">{detail.body}</p>
-                </div>
-              </article>
-            </WorkReveal>
-          ))}
+          {copy.details.map((detail, index) => {
+            const detailSrc = detail.image === "stories" ? media.odysseaStories : media.odysseaAdmin;
+            return (
+              <WorkReveal key={detail.label} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12}>
+                <article className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-3 backdrop-blur-md">
+                  {detailSrc ? (
+                    <button type="button" onClick={() => openImage(detailSrc)} className="relative block h-36 w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#ebe8df] sm:h-40 lg:h-32" aria-label={copy.open + " — " + detail.title}>
+                      <Image
+                        src={detailSrc}
+                        alt={detail.title}
+                        fill
+                        sizes="(min-width: 1024px) 360px, (min-width: 640px) 44vw, 90vw"
+                        className={`object-cover ${detail.image === "stories" ? "object-center" : "object-[50%_88%]"}`}
+                      />
+                    </button>
+                  ) : <div className="h-36 rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] sm:h-40 lg:h-32" />}
+                  <div className="px-2 pb-2 pt-3">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">{detail.label}</p>
+                    <h3 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">{detail.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600">{detail.body}</p>
+                  </div>
+                </article>
+              </WorkReveal>
+            );
+          })}
         </div>
       </div>
 
