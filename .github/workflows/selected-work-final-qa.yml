@@ -40,7 +40,7 @@ jobs:
             if (count !== 8) throw new Error('Desktop carousel must show eight marks, got ' + count);
             const first = await carousel.locator('button img').first().getAttribute('alt');
             const shadow = await carousel.locator('.work-media').first().evaluate(el => getComputedStyle(el).boxShadow);
-            if (shadow !== 'none') throw new Error('Carousel card shadow persists: ' + shadow);
+            if (shadow !== 'none' && !/^((rgba\\(0, 0, 0, 0\\) 0px 0px 0px 0px)(, )?)+$/.test(shadow)) throw new Error('Carousel card shadow persists: ' + shadow);
             await page.screenshot({ path: '.artifacts/work-logos.jpg', quality: 75 });
             await page.waitForTimeout(4400);
             const next = await carousel.locator('button img').first().getAttribute('alt');
