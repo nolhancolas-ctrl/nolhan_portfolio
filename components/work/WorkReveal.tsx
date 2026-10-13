@@ -17,17 +17,21 @@ export default function WorkReveal({ children, className = "", delay = 0, drift 
     target: ref,
     offset: ["start end", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 1], [drift, -drift]);
+
+  // A short, symmetrical focus window: arrive softly, stay crisp, then recede.
+  const enter = 0.18 + Math.min(delay, 0.2) * 0.15;
+  const leave = 0.82 + Math.min(delay, 0.2) * 0.15;
+  const stops = [0, enter, leave, 1];
+  const y = useTransform(scrollYProgress, stops, [drift, 0, 0, -drift]);
+  const opacity = useTransform(scrollYProgress, stops, [0.7, 1, 1, 0.7]);
+  const scale = useTransform(scrollYProgress, stops, [0.975, 1, 1, 0.975]);
+  const filter = useTransform(scrollYProgress, stops, ["blur(5px)", "blur(0px)", "blur(0px)", "blur(5px)"]);
 
   return (
     <motion.div
       ref={ref}
       className={className}
-      style={reducedMotion ? undefined : { y }}
-      initial={reducedMotion ? false : { opacity: 0.2, filter: "blur(9px)" }}
-      whileInView={{ opacity: 1, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.08, margin: "0px 0px -5% 0px" }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      style={reducedMotion ? undefined : { y, opacity, scale, filter }}
     >
       {children}
     </motion.div>
