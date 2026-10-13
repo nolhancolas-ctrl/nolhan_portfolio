@@ -76,7 +76,7 @@ export default function HomeWorkPreviewSection({ media }: Props) {
         </Link>
         <Link href="/work#systems" className="group rounded-[30px] border border-white/70 bg-white/50 p-5 backdrop-blur-md transition hover:bg-white/65 sm:p-7">
           <p className="text-xs font-semibold uppercase tracking-[0.17em] text-slate-600">{copy.system}</p>
-          <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision admin interface" label="Odyssea Vision / Admin" tone="admin" width={897} height={626} className="mt-5" />
+          <WorkMedia src={media.odysseaAdmin} alt="Odyssea Vision admin interface" label="Odyssea Vision / Admin" tone="admin" width={1917} height={866} className="mt-5" />
           <h3 className="mt-5 text-xl font-semibold text-slate-950">{copy.systemTitle}</h3>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">{copy.systemBody}</p>
         </Link>
