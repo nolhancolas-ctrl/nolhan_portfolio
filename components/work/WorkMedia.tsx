@@ -60,7 +60,7 @@ export default function WorkMedia({
             fill
             priority={priority}
             sizes="(min-width: 1280px) 1100px, (min-width: 768px) 90vw, 100vw"
-            className={`work-media-image ${fit === "square" ? "object-contain" : "object-contain"}`}
+            className="work-media-image object-contain"
           />
         </div>
       ) : (
