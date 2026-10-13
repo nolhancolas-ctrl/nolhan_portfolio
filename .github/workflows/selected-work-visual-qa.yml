@@ -1,0 +1,83 @@
+name: Selected Work visual QA
+on:
+  push:
+    branches: [codex/selected-work-showcase]
+    paths: [.github/workflows/selected-work-visual-qa.yml]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Check work page in Chromium
+        shell: bash
+        run: |
+          mkdir -p .artifacts
+          npm run start -- --port 3000 > /tmp/next.log 2>&1 &
+          for i in {1..40}; do
+            if curl -fsS http://127.0.0.1:3000/work > /dev/null; then break; fi
+            sleep 2
+          done
+          node <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            for (const [name, width, height] of [['desktop', 1440, 900], ['mobile', 390, 844]]) {
+              const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce' });
+              const page = await context.newPage();
+              await page.goto('http://127.0.0.1:3000/work', { waitUntil: 'domcontentloaded' });
+              await page.waitForTimeout(450);
+              if (await page.title() !== 'nolhan-dev.com') throw new Error('Unexpected document title');
+              const icon = await page.request.get('http://127.0.0.1:3000/icon.svg');
+              if (!icon.ok()) throw new Error('Favicon route failed: ' + icon.status());
+              await page.locator('#identities').scrollIntoViewIfNeeded();
+              await page.waitForTimeout(400);
+              const cards = page.locator('#identities article button');
+              if (await cards.count() !== 4) throw new Error('Expected four logos');
+              const first = await cards.nth(0).boundingBox();
+              const second = await cards.nth(1).boundingBox();
+              if (name === 'desktop' && Math.abs(first.y - second.y) > 2) throw new Error('Logo row is staggered: ' + first.y + ', ' + second.y);
+              if (Math.abs(first.width - first.height) > 2) throw new Error('Logo frame is not square');
+              await cards.nth(0).hover();
+              await page.waitForTimeout(650);
+              const hoverTransform = await cards.nth(0).locator('img').evaluate((img) => getComputedStyle(img).transform);
+              if (hoverTransform === 'none') throw new Error('Logo hover scale missing');
+              await page.locator('#identities').screenshot({ path: '.artifacts/work-logos-' + name + '.png' });
+              await cards.nth(0).click();
+              await page.waitForTimeout(350);
+              for (const side of ['prev', 'next']) {
+                const button = page.locator('.yarl__navigation_' + side);
+                const svg = button.locator('svg');
+                const a = await button.boundingBox();
+                const b = await svg.boundingBox();
+                if (!a || !b || Math.abs(a.x + a.width / 2 - b.x - b.width / 2) > 1.5 || Math.abs(a.y + a.height / 2 - b.y - b.height / 2) > 1.5) throw new Error(side + ' chevron not centered');
+              }
+              await page.screenshot({ path: '.artifacts/work-lightbox-' + name + '.png' });
+              await page.keyboard.press('Escape');
+              await page.locator('#systems').scrollIntoViewIfNeeded();
+              await page.waitForTimeout(400);
+              const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
+              if (overflow) throw new Error(name + ' horizontal overflow');
+              await page.locator('#systems').screenshot({ path: '.artifacts/work-systems-' + name + '.png' });
+              console.log(name + ': title, favicon, logo alignment, hover, lightbox centering, layout passed');
+              await context.close();
+            }
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          JS
+      - name: Save temporary QA images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .artifacts/work-*.png
+          git commit -m "Temporary work visual QA captures"
+          git push origin HEAD:codex/selected-work-showcase
