@@ -5,6 +5,7 @@ import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia, { type WorkMediaTone } from "@/components/work/WorkMedia";
 import WorkReveal from "@/components/work/WorkReveal";
+import DesignFocusIcon from "@/components/work/DesignFocusIcon";
 import type { SelectedWorkMedia } from "@/types/selectedWork";
 
 type Props = { media: SelectedWorkMedia };
@@ -33,7 +34,7 @@ export default function WorkFeaturedSection({ media }: Props) {
       eyebrow: "01 / Web experiences",
       heading: "Built around the story.",
       subheading: "Three directions, each with its own visual rhythm.",
-      live: "Visit website",
+      live: "odysseavision.com ↗",
       open: "Enlarge image",
       decisions: "Design focus",
       close: "Close",
@@ -78,7 +79,7 @@ export default function WorkFeaturedSection({ media }: Props) {
       eyebrow: "01 / Expériences web",
       heading: "Un design au service du récit.",
       subheading: "Trois directions, chacune avec son propre rythme visuel.",
-      live: "Voir le site",
+      live: "odysseavision.com ↗",
       open: "Agrandir l’image",
       decisions: "Parti pris",
       close: "Fermer",
@@ -169,27 +170,18 @@ export default function WorkFeaturedSection({ media }: Props) {
 
   return (
     <section id="websites" aria-labelledby="websites-title" className="scroll-mt-28 px-5 sm:px-8">
-      <WorkReveal className="mb-9 flex flex-col justify-between gap-2 border-b border-slate-900/10 pb-5 sm:flex-row sm:items-end">
-        <p id="websites-title" className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
-        <p className="text-sm text-slate-600">{copy.subheading}</p>
-      </WorkReveal>
+      <h2 id="websites-title" className="sr-only">{copy.heading}</h2>
 
       {projects.map((project, index) => (
         <div key={project.title}>
-          <article aria-labelledby={`project-title-${index}`} className="py-4">
-            <WorkReveal className="mb-8 grid gap-5 md:grid-cols-[minmax(0,0.52fr)_minmax(0,0.48fr)] md:items-end" drift={-8}>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{String(index + 1).padStart(2, "0")} / 03 · {project.category}</p>
-                <h3 id={`project-title-${index}`} className="mt-3 text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{project.title}</h3>
-              </div>
-              <div className="md:pl-8">
-                <p className="max-w-lg text-base leading-relaxed text-slate-700">{project.summary}</p>
-                {project.liveUrl && (
-                  <a href={project.liveUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-full border border-white/80 bg-white/75 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white">
-                    {copy.live}
-                  </a>
-                )}
-              </div>
+          <article aria-labelledby={`project-title-${index}`} className="py-14 sm:py-20">
+            <WorkReveal className="mb-10 text-center" drift={-8}>
+              <h3 id={`project-title-${index}`} className="text-4xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-6xl">{project.title}</h3>
+              {project.liveUrl && (
+                <a href={project.liveUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex rounded-full border border-white/80 bg-white/75 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white">
+                  {copy.live}
+                </a>
+              )}
             </WorkReveal>
 
             <WorkReveal drift={14}>
@@ -202,24 +194,24 @@ export default function WorkFeaturedSection({ media }: Props) {
               )}
             </WorkReveal>
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,0.58fr)_minmax(0,0.42fr)] lg:items-stretch">
-              <WorkReveal drift={index === 1 ? -16 : 16} className={index === 1 ? "lg:order-2" : ""}>
+            <div className="mt-6 grid gap-6 lg:grid-cols-2 lg:items-stretch">
+              <WorkReveal drift={12} className="h-full">
                 {project.detail ? (
-                  <button type="button" onClick={() => openImage(project.detail)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + project.title}>
-                    <WorkMedia src={project.detail} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
+                  <button type="button" onClick={() => openImage(project.detail)} className="block h-full w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + project.title}>
+                    <WorkMedia fit="stretch" src={project.detail} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
                   </button>
                 ) : (
-                  <WorkMedia src={null} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
+                  <WorkMedia fit="stretch" src={null} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
                 )}
               </WorkReveal>
 
-              <WorkReveal drift={index === 1 ? 16 : -16} delay={0.06} className={index === 1 ? "lg:order-1" : ""}>
+              <WorkReveal drift={-12} delay={0.06} className="h-full">
                 <div className="flex h-full flex-col justify-center rounded-[26px] border border-white/75 bg-white/50 px-6 py-5 backdrop-blur-xl sm:px-8 sm:py-7">
                   <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{copy.decisions}</p>
                   <div className="mt-3">
                     {project.notes.map((note, noteIndex) => (
-                      <div key={note.title} className="grid grid-cols-[32px_1fr] gap-3 border-t border-slate-900/10 py-4">
-                        <span className="pt-0.5 text-xs font-semibold text-slate-500">0{noteIndex + 1}</span>
+                      <div key={note.title} className="flex items-start gap-4 py-3">
+                        <DesignFocusIcon index={noteIndex} />
                         <div>
                           <h4 className="font-semibold text-slate-950">{note.title}</h4>
                           <p className="mt-1 text-sm leading-relaxed text-slate-600">{note.body}</p>
@@ -232,12 +224,6 @@ export default function WorkFeaturedSection({ media }: Props) {
             </div>
           </article>
 
-          {index < projects.length - 1 && (
-            <div aria-hidden="true" className="relative my-14 h-12 sm:my-20">
-              <div className="absolute left-1/2 top-1/2 h-10 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c8b6f3]/45 blur-2xl" />
-              <div className="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-slate-900/15 to-transparent" />
-            </div>
-          )}
         </div>
       ))}
 
