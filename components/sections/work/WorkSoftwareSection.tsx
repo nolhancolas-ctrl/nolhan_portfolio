@@ -6,7 +6,8 @@ import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia from "@/components/work/WorkMedia";
 import WorkReveal from "@/components/work/WorkReveal";
-import SoftwareVisualAccent, { SoftwareSymbol } from "@/components/work/SoftwareVisualAccent";
+import { SoftwareSymbol } from "@/components/work/SoftwareVisualAccent";
+import ServiceSculpture from "@/components/layout/visual/ServiceSculpture";
 import type { SelectedWorkMedia } from "@/types/selectedWork";
 
 type Props = { media: SelectedWorkMedia };
@@ -16,7 +17,7 @@ export default function WorkSoftwareSection({ media }: Props) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const copy = {
     en: {
-      eyebrow: "03 / Systems & interfaces",
+      eyebrow: "Systems & interfaces",
       title: "A site they can run themselves.",
       intro: "A publishing workspace that gives the Odyssea team control of its own stories.",
       details: [
@@ -28,7 +29,7 @@ export default function WorkSoftwareSection({ media }: Props) {
         { title: "More autonomy", body: "The team can add, edit and publish day-to-day content without waiting for a developer.", icon: "autonomy" as const },
         { title: "Less intervention", body: "The goal is a site they can keep current themselves. I step in for exceptional changes, not routine updates.", icon: "handoff" as const },
       ],
-      more: "Earlier interface studies",
+      more: "Explore more interface studies",
       moreIntro: "A compact archive of product UI explorations.",
       concept: "Interface concept",
       open: "Enlarge interface",
@@ -39,7 +40,7 @@ export default function WorkSoftwareSection({ media }: Props) {
       zoomOut: "Zoom out",
     },
     fr: {
-      eyebrow: "03 / Systèmes & interfaces",
+      eyebrow: "Systèmes & interfaces",
       title: "Un site qu’ils font vivre eux-mêmes.",
       intro: "Un espace de publication qui laisse l’équipe Odyssea piloter ses propres récits.",
       details: [
@@ -51,7 +52,7 @@ export default function WorkSoftwareSection({ media }: Props) {
         { title: "Plus d’autonomie", body: "L’équipe peut ajouter, modifier et publier ses contenus courants sans attendre un développeur.", icon: "autonomy" as const },
         { title: "Moins d’interventions", body: "Le but est qu’elle garde le site à jour elle-même. Je reviens pour les changements exceptionnels, pas pour les publications ordinaires.", icon: "handoff" as const },
       ],
-      more: "Études d’interfaces précédentes",
+      more: "Voir d’autres études d’interfaces",
       moreIntro: "Une petite archive d’explorations d’interfaces produit.",
       concept: "Concept d’interface",
       open: "Agrandir l’interface",
@@ -63,15 +64,9 @@ export default function WorkSoftwareSection({ media }: Props) {
     },
   }[lang];
 
-  const studies = [
-    { name: "Meal Planner", src: "/app/app11.webp" },
-    { name: "Habit & Analytics", src: "/app/app21.webp" },
-    { name: "Budget Insights", src: "/app/app31.webp" },
-  ];
   const slides = [
     ...(media.odysseaAdmin ? [{ src: media.odysseaAdmin, alt: "Odyssea Vision admin dashboard", title: "Odyssea Vision / Admin" }] : []),
     ...(media.odysseaStories ? [{ src: media.odysseaStories, alt: "Odyssea Vision public stories", title: "Odyssea Vision / Stories" }] : []),
-    ...studies.map((study) => ({ src: study.src, alt: study.name, title: study.name })),
   ];
   const openImage = (src: string) => {
     const index = slides.findIndex((slide) => slide.src === src);
@@ -80,17 +75,12 @@ export default function WorkSoftwareSection({ media }: Props) {
 
   return (
     <section id="systems" aria-labelledby="systems-title" className="scroll-mt-28 px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
-      <div aria-hidden="true" className="relative mb-14 h-px bg-gradient-to-r from-transparent via-slate-900/15 to-transparent">
-        <div className="absolute left-1/2 top-1/2 h-10 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d5b5d3]/40 blur-2xl" />
-      </div>
-
-      <WorkReveal className="mb-9 flex flex-wrap items-end justify-between gap-5">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
-          <h2 id="systems-title" className="mt-3 text-balance text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">{copy.intro}</p>
+      <WorkReveal className="relative mb-12 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
+        <h2 id="systems-title" className="mx-auto mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
+        <div className="work-planet pointer-events-none absolute -top-10 right-0 hidden h-40 w-40 lg:block">
+          <ServiceSculpture index={2} />
         </div>
-        <SoftwareVisualAccent className="hidden sm:block" />
       </WorkReveal>
 
       <div className="grid items-stretch gap-8 sm:gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
@@ -109,9 +99,9 @@ export default function WorkSoftwareSection({ media }: Props) {
             const detailSrc = detail.image === "stories" ? media.odysseaStories : media.odysseaAdmin;
             return (
               <WorkReveal key={detail.label} drift={index === 0 ? -12 : 12} delay={index === 0 ? 0.05 : 0.12} className="h-full">
-                <article className="flex h-full flex-col overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-3 backdrop-blur-md">
+                <article className="h-full overflow-hidden rounded-[24px] border border-white/75 bg-white/55 p-2 backdrop-blur-md">
                   {detailSrc ? (
-                    <button type="button" onClick={() => openImage(detailSrc)} className="relative block h-36 w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#ebe8df] sm:h-40 lg:h-32" aria-label={copy.open + " — " + detail.title}>
+                    <button type="button" onClick={() => openImage(detailSrc)} className="relative block h-44 w-full cursor-zoom-in overflow-hidden rounded-[16px] bg-[#ebe8df] sm:h-48 lg:h-full lg:min-h-[180px]" aria-label={copy.open + " — " + detail.title}>
                       <Image
                         src={detailSrc}
                         alt={detail.title}
@@ -120,12 +110,7 @@ export default function WorkSoftwareSection({ media }: Props) {
                         className={`work-detail-image object-cover ${detail.image === "stories" ? "object-center" : "object-[50%_88%]"}`}
                       />
                     </button>
-                  ) : <div className="h-36 rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] sm:h-40 lg:h-32" />}
-                  <div className="px-2 pb-2 pt-3">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">{detail.label}</p>
-                    <h3 className="mt-1 text-lg font-semibold tracking-tight text-slate-950">{detail.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-slate-600">{detail.body}</p>
-                  </div>
+                  ) : <div className="h-44 rounded-[16px] bg-gradient-to-br from-[#e4e2ec] to-[#f4f0e9] sm:h-48 lg:h-full lg:min-h-[180px]" />}
                 </article>
               </WorkReveal>
             );
@@ -148,25 +133,15 @@ export default function WorkSoftwareSection({ media }: Props) {
         </div>
       </WorkReveal>
 
-      <WorkReveal className="mt-12">
-        <details className="group rounded-[24px] border border-white/70 bg-white/40 px-5 py-5 backdrop-blur-md sm:px-7">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-base font-semibold text-slate-950 marker:hidden">
-            <span>{copy.more}</span>
-            <span aria-hidden="true" className="text-2xl font-light transition-transform group-open:rotate-45">+</span>
-          </summary>
-          <p className="mt-2 text-sm text-slate-600">{copy.moreIntro}</p>
-          <div className="mt-6 grid gap-4 border-t border-slate-900/10 pt-6 sm:grid-cols-3">
-            {studies.map((study) => (
-              <button key={study.name} type="button" onClick={() => openImage(study.src)} className="rounded-[20px] border border-white/75 bg-white/65 p-4 text-left transition hover:bg-white" aria-label={copy.open + " — " + study.name}>
-                <div className="relative mx-auto aspect-[9/15] max-w-[200px] overflow-hidden rounded-xl bg-slate-100">
-                  <Image src={study.src} alt={study.name} fill sizes="200px" className="work-detail-image object-contain" />
-                </div>
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{copy.concept}</p>
-                <h3 className="mt-1 font-semibold text-slate-950">{study.name}</h3>
-              </button>
-            ))}
-          </div>
-        </details>
+      <WorkReveal className="mt-10 text-center">
+        <a
+          href="https://www.figma.com/design/01YyxmIktchrjQPweMKuaJ/Nolhan-Colas-%E2%80%94-Design-Practice---Selected-Work?node-id=25-674&t=LU0ey9K9PYJ5x2Xe-1"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex rounded-full border border-white/80 bg-white/75 px-6 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white"
+        >
+          {copy.more} ↗
+        </a>
       </WorkReveal>
 
       <WorkLightbox slides={slides} index={activeIndex ?? 0} open={activeIndex !== null} sectionLabel={copy.eyebrow} onClose={() => setActiveIndex(null)} labels={copy} />
