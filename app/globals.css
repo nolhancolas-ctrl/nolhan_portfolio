@@ -462,3 +462,37 @@
   }
 }
 /* WORK LIGHTBOX INTERACTION FIX — END */
+
+/* Selected Work: restrained image hover and centered lightbox navigation. */
+.work-media-image,
+.work-detail-image {
+  transition: transform 550ms cubic-bezier(.22, 1, .36, 1);
+  transform-origin: center;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  button:hover .work-media-image,
+  button:focus-visible .work-media-image,
+  button:hover .work-detail-image,
+  button:focus-visible .work-detail-image {
+    transform: scale(1.045);
+  }
+}
+
+.yarl__navigation_prev,
+.yarl__navigation_next {
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  box-sizing: border-box;
+}
+
+.yarl__navigation_prev svg,
+.yarl__navigation_next svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  margin: 0;
+}
