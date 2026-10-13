@@ -107,6 +107,7 @@ export default function WorkLogosSection({ media }: Props) {
         <div
           ref={carouselRef}
           className="grid overflow-hidden rounded-[26px]"
+          style={rowStride > 0 ? { height: rowStride * 2 - 12 } : undefined}
           aria-roledescription="carousel"
           aria-label={copy.title}
           onMouseEnter={() => setPaused(true)}
