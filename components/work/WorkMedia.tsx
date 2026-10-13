@@ -11,6 +11,7 @@ type Props = {
   height?: number;
   className?: string;
   priority?: boolean;
+  fit?: "natural" | "square" | "stretch";
 };
 
 const fallbackTone: Record<WorkMediaTone, string> = {
@@ -31,19 +32,37 @@ export default function WorkMedia({
   height = 1000,
   className = "",
   priority = false,
+  fit = "natural",
 }: Props) {
+  const frame = fit === "square"
+    ? "relative aspect-square overflow-hidden rounded-[20px]"
+    : "relative aspect-[897/626] overflow-hidden rounded-[20px] lg:aspect-auto lg:h-full";
+
   return (
-    <div className={`overflow-hidden rounded-[26px] border border-white/80 bg-white/55 p-1.5 shadow-[0_18px_50px_rgba(53,39,93,0.10)] backdrop-blur-md ${className}`}>
-      {src ? (
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          priority={priority}
-          sizes="(min-width: 1280px) 1100px, (min-width: 768px) 90vw, 100vw"
-          className="block h-auto w-full rounded-[20px]"
-        />
+    <div className={`work-media overflow-hidden rounded-[26px] border border-white/80 bg-white/55 p-1.5 shadow-[0_18px_50px_rgba(53,39,93,0.10)] backdrop-blur-md ${fit === "stretch" ? "lg:h-full" : ""} ${className}`}>
+      {src ? fit === "natural" ? (
+        <div className="overflow-hidden rounded-[20px]">
+          <Image
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            priority={priority}
+            sizes="(min-width: 1280px) 1100px, (min-width: 768px) 90vw, 100vw"
+            className="work-media-image block h-auto w-full"
+          />
+        </div>
+      ) : (
+        <div className={`${frame} ${fit === "stretch" ? "bg-[#f5f2eb]" : ""}`}>
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            priority={priority}
+            sizes="(min-width: 1280px) 1100px, (min-width: 768px) 90vw, 100vw"
+            className={`work-media-image ${fit === "square" ? "object-contain" : "object-contain"}`}
+          />
+        </div>
       ) : (
         <div
           role="img"
