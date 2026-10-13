@@ -14,13 +14,17 @@ export default function WorkPage() {
   return (
     <>
       <MainNavbar />
+
       <div className="mx-auto max-w-6xl">
         <WorkIntroSection />
         <WorkFeaturedSection media={media} />
         <WorkLogosSection media={media} />
         <WorkSoftwareSection media={media} />
       </div>
-      <PageSection id="contact" className="pb-18"><ContactSection /></PageSection>
+
+      <PageSection id="contact" className="pb-18">
+        <ContactSection />
+      </PageSection>
     </>
   );
 }

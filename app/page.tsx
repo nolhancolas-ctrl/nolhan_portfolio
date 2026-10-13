@@ -15,12 +15,30 @@ export default function Page() {
   return (
     <>
       <MainNavbar />
-      <PageSection id="hero"><HeroSection /></PageSection>
-      <PageSection id="process"><ProcessSection /></PageSection>
-      <PageSection id="work-preview"><HomeWorkPreviewSection media={media} /></PageSection>
-      <PageSection id="pricing"><PricingSection /></PageSection>
-      <PageSection id="faq"><FaqSection /></PageSection>
-      <PageSection id="contact" className="pb-18"><ContactSection /></PageSection>
+
+      <PageSection id="hero">
+        <HeroSection />
+      </PageSection>
+
+      <PageSection id="process">
+        <ProcessSection />
+      </PageSection>
+
+      <PageSection id="work-preview">
+        <HomeWorkPreviewSection media={media} />
+      </PageSection>
+
+      <PageSection id="pricing">
+        <PricingSection />
+      </PageSection>
+
+      <PageSection id="faq">
+        <FaqSection />
+      </PageSection>
+
+      <PageSection id="contact" className="pb-18">
+        <ContactSection />
+      </PageSection>
     </>
   );
 }
