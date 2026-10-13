@@ -6,6 +6,8 @@ export type SelectedWorkMedia = {
   aubeHome: string | null;
   aubeDetail: string | null;
   odysseaAdmin: string | null;
+  odysseaAdminStories: string | null;
+  odysseaAdminPortfolio: string | null;
   terraLogo: string | null;
   aubeLogo: string | null;
   atelierLogo: string | null;
