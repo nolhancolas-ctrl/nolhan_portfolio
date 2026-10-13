@@ -17,7 +17,7 @@ export default function WorkSoftwareSection({ media }: Props) {
   const copy = {
     en: {
       eyebrow: "03 / Systems & interfaces",
-      title: "Made to keep moving without me.",
+      title: "A site they can run themselves.",
       intro: "A publishing workspace that gives the Odyssea team control of its own stories.",
       dashboard: "One view of what needs attention",
       dashboardNote: "Recent stories, albums and activity stay visible.",
@@ -42,7 +42,7 @@ export default function WorkSoftwareSection({ media }: Props) {
     },
     fr: {
       eyebrow: "03 / Systèmes & interfaces",
-      title: "Un site qui vit sans mon intervention.",
+      title: "Un site qu’ils font vivre eux-mêmes.",
       intro: "Un espace de publication qui laisse l’équipe Odyssea piloter ses propres récits.",
       dashboard: "Une vue claire sur ce qui compte",
       dashboardNote: "Récits récents, albums et activité restent visibles.",
