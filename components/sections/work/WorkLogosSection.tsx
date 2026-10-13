@@ -46,7 +46,11 @@ export default function WorkLogosSection({ media }: Props) {
 
   useEffect(() => {
     if (reducedMotion || paused || !inView || rows.length < 2) return;
-    const timer = window.setInterval(() => setRow((current) => (current + 1) % rows.length), ROTATION_MS);
+    const timer = window.setInterval(() => {
+      const element = carouselRef.current;
+      if (element?.matches(":hover") || (document.activeElement && element?.contains(document.activeElement))) return;
+      setRow((current) => (current + 1) % rows.length);
+    }, ROTATION_MS);
     return () => window.clearInterval(timer);
   }, [inView, paused, reducedMotion, rows.length]);
 
