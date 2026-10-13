@@ -97,7 +97,7 @@ export default function WorkSoftwareSection({ media }: Props) {
         <SoftwareVisualAccent className="hidden sm:block" />
       </WorkReveal>
 
-      <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
+      <div className="grid items-stretch gap-8 sm:gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)]">
         <WorkReveal drift={15} className="flex flex-col">
           {media.odysseaAdmin ? (
             <button type="button" onClick={() => openImage(media.odysseaAdmin as string)} className="block w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open}>
