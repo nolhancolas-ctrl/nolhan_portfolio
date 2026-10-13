@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia, { type WorkMediaTone } from "@/components/work/WorkMedia";
@@ -16,6 +16,7 @@ export default function WorkLogosSection({ media }: Props) {
   const { lang } = useLang();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [row, setRow] = useState(0);
+  const [moving, setMoving] = useState(false);
   const [columns, setColumns] = useState(4);
   const [rowStride, setRowStride] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -44,13 +45,14 @@ export default function WorkLogosSection({ media }: Props) {
   );
   const slides = availableMarks.map((mark) => ({ src: mark.src, alt: mark.name, title: mark.name }));
   const currentRow = row % Math.max(rows.length, 1);
-  const visibleRows = [rows[currentRow] ?? [], rows[(currentRow + 1) % Math.max(rows.length, 1)] ?? []];
+  const visibleRows = [0, 1, 2].map((offset) => rows[(currentRow + offset) % Math.max(rows.length, 1)] ?? []);
 
   useEffect(() => {
     const query = window.matchMedia("(min-width: 768px)");
     const syncColumns = () => {
       setColumns(query.matches ? 4 : 2);
       setRow(0);
+      setMoving(false);
     };
     syncColumns();
     query.addEventListener("change", syncColumns);
@@ -75,10 +77,10 @@ export default function WorkLogosSection({ media }: Props) {
     const timer = window.setInterval(() => {
       const element = carouselRef.current;
       if (element?.matches(":hover") || (document.activeElement && element?.contains(document.activeElement))) return;
-      setRow((current) => (current + 1) % rows.length);
+      if (rowStride > 0) setMoving((current) => current || true);
     }, ROTATION_MS);
     return () => window.clearInterval(timer);
-  }, [activeIndex, inView, paused, reducedMotion, rows.length]);
+  }, [activeIndex, inView, paused, reducedMotion, rowStride, rows.length]);
 
   const openLogo = (src: string) => {
     const index = slides.findIndex((slide) => slide.src === src);
@@ -116,21 +118,21 @@ export default function WorkLogosSection({ media }: Props) {
         >
           {reducedMotion ? (
             <div className="col-start-1 row-start-1 flex flex-col gap-3">
-              {visibleRows.map(renderRow)}
+              {visibleRows.slice(0, 2).map(renderRow)}
             </div>
           ) : (
-            <AnimatePresence initial={false} mode="sync">
-              <motion.div
-                key={row}
-                initial={{ y: rowStride }}
-                animate={{ y: 0 }}
-                exit={{ y: -rowStride }}
-                transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-                className="col-start-1 row-start-1 flex flex-col gap-3"
-              >
-                {visibleRows.map(renderRow)}
-              </motion.div>
-            </AnimatePresence>
+            <motion.div
+              animate={{ y: moving ? -rowStride : 0 }}
+              transition={{ duration: moving ? 0.75 : 0, ease: [0.22, 1, 0.36, 1] }}
+              onAnimationComplete={() => {
+                if (!moving) return;
+                setRow((current) => (current + 1) % rows.length);
+                setMoving(false);
+              }}
+              className="col-start-1 row-start-1 flex flex-col gap-3"
+            >
+              {visibleRows.map(renderRow)}
+            </motion.div>
           )}
         </div>
       </WorkReveal>
