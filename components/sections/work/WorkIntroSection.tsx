@@ -1,97 +1,67 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
 
 export default function WorkIntroSection() {
   const { lang } = useLang();
-
-  const t = {
+  const reducedMotion = useReducedMotion();
+  const copy = {
     en: {
-      pretitre: "Selected work • Product & brand",
+      eyebrow: "Selected work • Product & brand",
       line1: "Visual systems for",
       line2: "digital products.",
-      subtitle:
-        "Logos, landing pages, product UI and motion pieces shaped for real brands and teams.",
-      ctaPrimary: "Back to homepage",
-      ctaSecondary: "Book a call",
+      subtitle: "Logos, landing pages, product UI and motion pieces shaped for real brands and teams.",
+      home: "Back to homepage",
+      contact: "Book a call",
     },
     fr: {
-      pretitre: "Travaux sélectionnés • Produit & marque",
+      eyebrow: "Travaux sélectionnés • Produit & marque",
       line1: "Systèmes visuels pour",
       line2: "produits digitaux.",
-      subtitle:
-        "Logos, landing pages, interfaces produit et animations conçus pour des projets concrets.",
-      ctaPrimary: "Retour à l’accueil",
-      ctaSecondary: "Réserver un appel",
+      subtitle: "Logos, landing pages, interfaces produit et animations conçus pour des projets concrets.",
+      home: "Retour à l’accueil",
+      contact: "Réserver un appel",
     },
   }[lang];
 
   return (
-    <section
-      id="work"
-      aria-labelledby="work-title"
-      className="relative w-full flex items-center justify-center pb-20"
-    >
-      <div className="max-w-3xl mx-auto text-center px-6">
-        {/* Pré-titre */}
+    <section id="work" aria-labelledby="work-title" className="flex min-h-[min(720px,82svh)] items-center justify-center px-5 pb-20 pt-6 text-center sm:px-8">
+      <div className="mx-auto max-w-3xl">
         <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
+          initial={{ opacity: 0, y: reducedMotion ? 0 : -10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-sm text-slate-600 mb-3"
+          className="mb-3 text-sm text-slate-600"
         >
-          {t.pretitre}
+          {copy.eyebrow}
         </motion.p>
-
-        {/* Titre */}
         <motion.h1
           id="work-title"
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-slate-900 mb-6"
+          initial={{ opacity: 0, y: reducedMotion ? 0 : 28, filter: reducedMotion ? "none" : "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="mb-6 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl md:text-6xl"
         >
-          {t.line1}
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-500">
-            {t.line2}
-          </span>
+          {copy.line1}<br />
+          <span className="bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent">{copy.line2}</span>
         </motion.h1>
-
-        {/* Sous-titre */}
         <motion.p
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ delay: 0.25, duration: 0.7 }}
-          className="text-base sm:text-lg text-slate-700 leading-relaxed mb-10 max-w-2xl mx-auto"
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.7 }}
+          className="mx-auto mb-10 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg"
         >
-          {t.subtitle}
+          {copy.subtitle}
         </motion.p>
-
-        {/* CTA (optionnels, même style que le hero) */}
         <motion.div
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ delay: 0.4, duration: 0.7 }}
-          className="flex items-center justify-center gap-4"
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.45, duration: 0.7 }}
+          className="flex flex-wrap items-center justify-center gap-4"
         >
-          <a
-            href="/#hero"
-            className="px-6 py-3 rounded-full bg-slate-900 text-white font-medium hover:bg-slate-800 transition whitespace-nowrap"
-          >
-            {t.ctaPrimary}
-          </a>
-          <a
-            href="/#contact"
-            className="px-6 py-3 rounded-full border border-slate-300 font-medium hover:bg-slate-100 transition whitespace-nowrap"
-          >
-            {t.ctaSecondary}
-          </a>
+          <a href="/#hero" className="hero-cta whitespace-nowrap rounded-full bg-slate-900 px-6 py-3 font-medium text-white hover:bg-slate-800">{copy.home}</a>
+          <a href="#contact" className="hero-cta whitespace-nowrap rounded-full border border-slate-300 px-6 py-3 font-medium text-slate-900 hover:bg-white/60">{copy.contact}</a>
         </motion.div>
       </div>
     </section>

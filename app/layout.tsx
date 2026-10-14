@@ -16,7 +16,7 @@ import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Nolhan Colas — Web Engineer & Designer",
+  title: "nolhan-dev.com",
   description: "Expériences Web créatives et interactives.",
 };
 

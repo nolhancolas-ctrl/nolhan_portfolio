@@ -11,7 +11,7 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!ready || reducedMotion) return;
     const lenis = new Lenis({
-      autoRaf: true, lerp: 0.11, smoothWheel: true, syncTouch: false,
+      autoRaf: true, lerp: 0.28, smoothWheel: true, syncTouch: false,
       anchors: { offset: -88 },
       prevent: (node) => Boolean(node.closest("[data-lenis-prevent], .swiper, [role='dialog']")),
     });

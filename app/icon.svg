@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="nolhan-dev.com">
+  <defs>
+    <linearGradient id="surface" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#262443"/>
+      <stop offset=".55" stop-color="#161A33"/>
+      <stop offset="1" stop-color="#0E172B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="14" y1="14" x2="49" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9C7BFF"/>
+      <stop offset=".55" stop-color="#C36BF7"/>
+      <stop offset="1" stop-color="#E970D9"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#surface)"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="16.25" fill="none" stroke="#F8F5FF" stroke-opacity=".28" stroke-width="1.5"/>
+  <path d="M17 47V17M47 47V17" fill="none" stroke="#FAF8FF" stroke-width="8" stroke-linecap="round"/>
+  <path d="M17 17 47 47" fill="none" stroke="url(#accent)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M17 17 47 47" fill="none" stroke="#FFF" stroke-opacity=".26" stroke-width="1.25" stroke-linecap="round"/>
+</svg>

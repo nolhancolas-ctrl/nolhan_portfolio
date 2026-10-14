@@ -1,42 +1,30 @@
 // app/work/page.tsx
 import PageSection from "@/components/layout/PageSection";
+import MainNavbar from "@/components/layout/MainNavbar";
 import WorkIntroSection from "@/components/sections/work/WorkIntroSection";
+import WorkFeaturedSection from "@/components/sections/work/WorkFeaturedSection";
 import WorkLogosSection from "@/components/sections/work/WorkLogosSection";
-import DesignSection from "@/components/sections/work/design/DesignSection";
 import WorkSoftwareSection from "@/components/sections/work/WorkSoftwareSection";
 import ContactSection from "@/components/sections/shared/BookCallSection";
-import { getLogoImages, getSoftwareImages } from "@/lib/workAssets";
-import MainNavbar from "@/components/layout/MainNavbar";
+import { getSelectedWorkMedia } from "@/lib/selectedWorkAssets";
 
 export default function WorkPage() {
-  const logos = getLogoImages();
-  const softwares = getSoftwareImages();
+  const media = getSelectedWorkMedia();
 
   return (
     <>
-
       <MainNavbar />
 
-      <PageSection id="hero">
+      <div className="mx-auto max-w-6xl">
         <WorkIntroSection />
-      </PageSection>
-
-      <PageSection id="logos">
-        <WorkLogosSection images={logos} />
-      </PageSection>
-
-      <PageSection id="landings">
-        <DesignSection />
-      </PageSection>
-
-      <PageSection id="software">
-        <WorkSoftwareSection/>
-      </PageSection>
+        <WorkFeaturedSection media={media} />
+        <WorkLogosSection media={media} />
+        <WorkSoftwareSection media={media} />
+      </div>
 
       <PageSection id="contact" className="pb-18">
         <ContactSection />
       </PageSection>
-
     </>
   );
 }

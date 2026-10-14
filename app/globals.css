@@ -97,6 +97,19 @@
 .sculpture-1 .sculpture-fallback span { border-radius: 50%; width: 112px; height: 112px; mask: radial-gradient(circle, transparent 27%, black 28%); }
 .sculpture-2 .sculpture-fallback span { border-radius: 50%; background: radial-gradient(circle at 30% 24%, #fff, #e3c5c3 37%, #8e7c9f 70%, #ebc3b6); }
 .service-sculpture.is-webgl-ready .sculpture-fallback { opacity: 0; }
+.work-planet .service-sculpture { width: 100%; height: 100%; margin: 0; overflow: visible; }
+.work-planet .sculpture-fallback span { width: 94px; height: 94px; }
+.work-planet .sculpture-canvas { opacity: 0; transform: scale(.94); transform-origin: center; transition: opacity .6s ease, transform .8s cubic-bezier(.22,1,.36,1); }
+.work-planet .service-sculpture.is-webgl-ready .sculpture-canvas { opacity: 1; transform: scale(1); }
+.work-planet .sculpture-fallback { transition: opacity .6s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .work-planet .sculpture-canvas,
+  .work-planet .sculpture-fallback { transition: none; }
+  .work-planet .sculpture-canvas { transform: none; }
+}
+.work-mark-sculpture .service-sculpture { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+.work-mark-sculpture .sculpture-fallback span { width: 92px; height: 92px; }
+
 .booking-shell { position: relative; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .cal-frame { position: relative; min-height: 620px; transition: min-height .75s cubic-bezier(.22,1,.36,1), background-color .5s; }
 .cal-frame.is-ready { min-height: 0; }
@@ -462,3 +475,37 @@
   }
 }
 /* WORK LIGHTBOX INTERACTION FIX — END */
+
+/* Selected Work: restrained image hover and centered lightbox navigation. */
+.work-media-image,
+.work-detail-image {
+  transition: transform 550ms cubic-bezier(.22, 1, .36, 1);
+  transform-origin: center;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  button:hover .work-media-image,
+  button:focus-visible .work-media-image,
+  button:hover .work-detail-image,
+  button:focus-visible .work-detail-image {
+    transform: scale(1.045);
+  }
+}
+
+.yarl__navigation_prev,
+.yarl__navigation_next {
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  box-sizing: border-box;
+}
+
+.yarl__navigation_prev svg,
+.yarl__navigation_next svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  margin: 0;
+}

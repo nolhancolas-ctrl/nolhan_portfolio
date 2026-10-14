@@ -1,145 +1,156 @@
 "use client";
 
-import WorkLightbox from "@/components/work/WorkLightbox";
-import { useAutoRail } from "@/hooks/useAutoRail";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useLang } from "@/hooks/useLang";
-import { reveal } from "@/lib/motion";
-import type { WorkImage } from "@/types/work";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { useRef, useState } from "react";
+import WorkLightbox from "@/components/work/WorkLightbox";
+import WorkMedia, { type WorkMediaTone } from "@/components/work/WorkMedia";
+import WorkReveal from "@/components/work/WorkReveal";
+import ServiceSculpture from "@/components/layout/visual/ServiceSculpture";
+import type { SelectedWorkMedia } from "@/types/selectedWork";
 
-type Props = {
-  images: WorkImage[];
-};
+type Props = { media: SelectedWorkMedia };
+type Mark = { name: string; src: string | null; tone: WorkMediaTone };
+const ROTATION_MS = 4000;
 
-export default function WorkLogosSection({ images }: Props) {
+export default function WorkLogosSection({ media }: Props) {
   const { lang } = useLang();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const railRef = useRef<HTMLDivElement | null>(null);
-  const loopImages = images.length ? [...images, ...images] : [];
-
-  useAutoRail(railRef, loopImages.length);
-
-  const t = {
-    en: {
-      kicker: "Logos",
-      title: "Marks & logotypes",
-      close: "Close",
-      previous: "Previous logo",
-      next: "Next logo",
-      zoomIn: "Zoom in",
-      zoomOut: "Zoom out",
-    },
-    fr: {
-      kicker: "Logos",
-      title: "Signatures & logotypes",
-      close: "Fermer",
-      previous: "Logo précédent",
-      next: "Logo suivant",
-      zoomIn: "Agrandir",
-      zoomOut: "Réduire",
-    },
+  const [row, setRow] = useState(0);
+  const [moving, setMoving] = useState(false);
+  const [columns, setColumns] = useState(4);
+  const [rowStride, setRowStride] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(carouselRef, { amount: 0.25 });
+  const reducedMotion = useReducedMotion();
+  const copy = {
+    en: { title: "Marks & logotypes", open: "Enlarge logo", close: "Close", previous: "Previous logo", next: "Next logo", zoomIn: "Zoom in", zoomOut: "Zoom out" },
+    fr: { title: "Signatures & logotypes", open: "Agrandir le logo", close: "Fermer", previous: "Logo précédent", next: "Logo suivant", zoomIn: "Agrandir", zoomOut: "Réduire" },
   }[lang];
 
-  const slides = images.map((image) => ({
-    src: image.src,
-    alt: image.alt,
-    title: image.alt,
-  }));
+  const marks: Mark[] = [
+    { name: "Terra Sculptura", src: media.terraLogo, tone: "forest" },
+    { name: "Aube Coffee", src: media.aubeLogo, tone: "coffee" },
+    { name: "Nomad", src: media.atelierLogo, tone: "workshop" },
+    { name: "Odyssea Vision", src: media.odysseaLogo, tone: "ocean" },
+    { name: "Relais", src: "/logo/relais.webp", tone: "paper" },
+    { name: "La Maison du Tiramisu", src: "/logo/tiramisu.webp", tone: "coffee" },
+    { name: "Nereo", src: "/logo/nero.webp", tone: "ocean" },
+    { name: "Novera", src: "/logo/novera.webp", tone: "paper" },
+    { name: "Nolhan Colas", src: "/logo/nolhan-colas.webp", tone: "forest" },
+    { name: "Fugue", src: "/logo/fugue.webp", tone: "paper" },
+    { name: "Marge", src: "/logo/marge.webp", tone: "paper" },
+    { name: "Odyssea Vision 2", src: "/logo/odyssea-vision2.webp", tone: "ocean" },
+    { name: "nolhan-dev.com", src: "/logo/nolhan-dev.webp", tone: "paper" },
+  ];
+  const availableMarks = marks.filter((mark): mark is Mark & { src: string } => Boolean(mark.src));
+  const rows = Array.from({ length: availableMarks.length }, (_, index) =>
+    Array.from({ length: columns }, (_, offset) =>
+      availableMarks[(index * columns + offset) % availableMarks.length],
+    ),
+  );
+  const slides = availableMarks.map((mark) => ({ src: mark.src, alt: mark.name, title: mark.name }));
+  const currentRow = row % Math.max(rows.length, 1);
+  const visibleRows = [0, 1, 2].map((offset) => rows[(currentRow + offset) % Math.max(rows.length, 1)] ?? []);
+
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 768px)");
+    const syncColumns = () => {
+      setColumns(query.matches ? 4 : 2);
+      setRow(0);
+      setMoving(false);
+    };
+    syncColumns();
+    query.addEventListener("change", syncColumns);
+    return () => query.removeEventListener("change", syncColumns);
+  }, []);
+
+  useEffect(() => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const updateStride = () => {
+      const firstRow = container.querySelector<HTMLElement>("[data-logo-row]");
+      if (firstRow) setRowStride(firstRow.offsetHeight + 12);
+    };
+    updateStride();
+    const observer = new ResizeObserver(updateStride);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [columns, row, reducedMotion]);
+
+  useEffect(() => {
+    if (reducedMotion || paused || !inView || activeIndex !== null || rows.length < 2) return;
+    const timer = window.setInterval(() => {
+      const element = carouselRef.current;
+      if (element?.matches(":hover") || (document.activeElement && element?.contains(document.activeElement))) return;
+      if (rowStride > 0) setMoving((current) => current || true);
+    }, ROTATION_MS);
+    return () => window.clearInterval(timer);
+  }, [activeIndex, inView, paused, reducedMotion, rowStride, rows.length]);
+
+  const openLogo = (src: string) => {
+    const index = slides.findIndex((slide) => slide.src === src);
+    if (index >= 0) setActiveIndex(index);
+  };
+  const renderMark = (mark: Mark & { src: string }, hidden: boolean) => (
+    <button key={mark.src} type="button" onClick={() => openLogo(mark.src)} tabIndex={hidden ? -1 : undefined} className="block min-w-0 cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + mark.name}>
+      <WorkMedia src={mark.src} alt={mark.name + " logo"} label={mark.name} tone={mark.tone} width={1200} height={1200} fit="square" className="!shadow-none" />
+    </button>
+  );
+  const renderRow = (marksInRow: Array<Mark & { src: string }>, index: number) => (
+    <div key={index} data-logo-row aria-hidden={index === 2} className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      {marksInRow.map((mark) => renderMark(mark, index === 2))}
+    </div>
+  );
 
   return (
-    <section aria-labelledby="logos-title">
-      <div className="space-y-8">
-        <motion.div {...reveal} className="space-y-3 text-center">
-          <p className="text-sm font-medium tracking-wide text-slate-500 uppercase">
-            {t.kicker}
-          </p>
-
-          <h2
-            id="logos-title"
-            className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900"
-          >
-            {t.title}
-          </h2>
-        </motion.div>
-
-        <motion.div
-          {...reveal}
-          className="hidden sm:grid gap-5 grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
-        >
-          {images.map((image, index) => (
-            <motion.button
-              type="button"
-              key={image.src}
-              onClick={() => setActiveIndex(index)}
-              className="
-                relative group aspect-square overflow-hidden
-                rounded-3xl border border-white/55
-                bg-white/20 backdrop-blur-sm
-                shadow-sm cursor-zoom-in
-              "
-              animate={{ y: [0, -4, 0] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: index * 0.25,
-              }}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
-              />
-
-              <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/5" />
-            </motion.button>
-          ))}
-        </motion.div>
-
-        <motion.div {...reveal} className="sm:hidden px-4">
-          <div
-            ref={railRef}
-            data-lenis-prevent
-            className="overflow-x-auto no-scrollbar py-2"
-          >
-            <div className="grid grid-rows-2 grid-flow-col auto-cols-[220px] gap-3">
-              {loopImages.map((image, index) => (
-                <button
-                  type="button"
-                  key={`${image.src}-${index}`}
-                  onClick={() => setActiveIndex(index % images.length)}
-                  className="
-                    relative aspect-square overflow-hidden
-                    rounded-3xl border border-white/55
-                    bg-white/15 backdrop-blur-sm
-                  "
-                >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                    sizes="220px"
-                  />
-                </button>
-              ))}
-            </div>
+    <section id="identities" aria-labelledby="identities-title" className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28">
+      <WorkReveal className="mb-10 text-center">
+        <div className="relative inline-flex items-center justify-center">
+          <div className="work-mark-sculpture pointer-events-none absolute right-full top-1/2 mr-5 hidden h-28 w-28 -translate-y-1/2 lg:block" aria-hidden="true">
+            <ServiceSculpture index={1} preload />
           </div>
-        </motion.div>
-      </div>
+          <h2 id="identities-title" className="text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
+        </div>
+      </WorkReveal>
 
-      <WorkLightbox
-        slides={slides}
-        index={activeIndex ?? 0}
-        open={activeIndex !== null}
-        sectionLabel={t.kicker}
-        onClose={() => setActiveIndex(null)}
-        labels={t}
-      />
+      <WorkReveal>
+        <div
+          ref={carouselRef}
+          className="grid overflow-hidden rounded-[26px]"
+          style={rowStride > 0 ? { height: rowStride * 2 - 12 } : undefined}
+          aria-roledescription="carousel"
+          aria-label={copy.title}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node)) setPaused(false);
+          }}
+        >
+          {reducedMotion ? (
+            <div className="col-start-1 row-start-1 flex h-max flex-col gap-3">
+              {visibleRows.slice(0, 2).map(renderRow)}
+            </div>
+          ) : (
+            <motion.div
+              animate={{ y: moving ? -rowStride : 0 }}
+              transition={{ duration: moving ? 0.75 : 0, ease: [0.22, 1, 0.36, 1] }}
+              onAnimationComplete={() => {
+                if (!moving) return;
+                setRow((current) => (current + 1) % rows.length);
+                setMoving(false);
+              }}
+              className="col-start-1 row-start-1 flex flex-col gap-3"
+            >
+              {visibleRows.map(renderRow)}
+            </motion.div>
+          )}
+        </div>
+      </WorkReveal>
+
+      {slides.length > 0 && <WorkLightbox slides={slides} index={activeIndex ?? 0} open={activeIndex !== null} sectionLabel={copy.title} onClose={() => setActiveIndex(null)} labels={copy} />}
     </section>
   );
 }
