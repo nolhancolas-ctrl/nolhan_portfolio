@@ -34,15 +34,21 @@ export default function WorkLogosSection({ media }: Props) {
     { name: "Aube Coffee", src: media.aubeLogo, tone: "coffee" },
     { name: "Nomad", src: media.atelierLogo, tone: "workshop" },
     { name: "Odyssea Vision", src: media.odysseaLogo, tone: "ocean" },
-    ...Array.from({ length: 8 }, (_, index): Mark => ({
-      name: `Logo study ${String(index + 1).padStart(2, "0")}`,
-      src: `/logos/logo${index + 1}.webp`,
-      tone: "paper",
-    })),
+    { name: "Relais", src: "/logo/relais.webp", tone: "paper" },
+    { name: "La Maison du Tiramisu", src: "/logo/tiramisu.webp", tone: "coffee" },
+    { name: "Nereo", src: "/logo/nero.webp", tone: "ocean" },
+    { name: "Novera", src: "/logo/novera.webp", tone: "paper" },
+    { name: "Nolhan Colas", src: "/logo/nolhan-colas.webp", tone: "forest" },
+    { name: "Fugue", src: "/logo/fugue.webp", tone: "paper" },
+    { name: "Marge", src: "/logo/marge.webp", tone: "paper" },
+    { name: "Odyssea Vision 2", src: "/logo/odyssea-vision2.webp", tone: "ocean" },
+    { name: "nolhan-dev.com", src: "/logo/nolhan-dev.webp", tone: "paper" },
   ];
   const availableMarks = marks.filter((mark): mark is Mark & { src: string } => Boolean(mark.src));
-  const rows = Array.from({ length: Math.ceil(availableMarks.length / columns) }, (_, index) =>
-    availableMarks.slice(index * columns, (index + 1) * columns)
+  const rows = Array.from({ length: availableMarks.length }, (_, index) =>
+    Array.from({ length: columns }, (_, offset) =>
+      availableMarks[(index * columns + offset) % availableMarks.length],
+    ),
   );
   const slides = availableMarks.map((mark) => ({ src: mark.src, alt: mark.name, title: mark.name }));
   const currentRow = row % Math.max(rows.length, 1);

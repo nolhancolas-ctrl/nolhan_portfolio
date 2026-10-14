@@ -12,10 +12,10 @@ const assetPaths: Record<keyof SelectedWorkMedia, string> = {
   odysseaAdmin: "work/software/odyssea-admin-dashboard.webp",
   odysseaAdminStories: "work/software/odyssea-admin-stories.webp",
   odysseaAdminPortfolio: "work/software/odyssea-admin-portfolio.webp",
-  terraLogo: "logos/terra-sculptura.png",
-  aubeLogo: "logos/aube-coffee.png",
-  atelierLogo: "logos/atelier-chrome-craft.png",
-  odysseaLogo: "logos/odyssea-vision.png",
+  terraLogo: "logo/terra-sculptura.webp",
+  aubeLogo: "logo/aube-coffee.webp",
+  atelierLogo: "logo/nomad.webp",
+  odysseaLogo: "logo/odyssea-vision.webp",
 };
 
 export function getSelectedWorkMedia(): SelectedWorkMedia {
