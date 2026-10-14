@@ -21,6 +21,7 @@ jobs:
           node <<'NODE'
           const { chromium } = require('playwright');
           const path = require('path');
+          const fs = require('fs');
           (async () => {
             const browser = await chromium.launch({ headless: true });
             for (const name of ['fugue', 'madre']) {
@@ -34,8 +35,8 @@ jobs:
               await page.close();
             }
             const board = await browser.newPage({ viewport: { width: 1280, height: 740 }, deviceScaleFactor: 1 });
-            const fugue = 'file://' + path.resolve('public/logos/proposals/fugue.svg');
-            const madre = 'file://' + path.resolve('public/logos/proposals/madre.svg');
+            const fugue = 'data:image/svg+xml;base64,' + fs.readFileSync('public/logos/proposals/fugue.svg').toString('base64');
+            const madre = 'data:image/svg+xml;base64,' + fs.readFileSync('public/logos/proposals/madre.svg').toString('base64');
             await board.setContent('<html><body style="margin:0;background:#e9e4ea;display:flex;align-items:center;justify-content:center;gap:28px;height:740px"><img src="' + fugue + '" style="width:560px;height:560px;border-radius:24px;box-shadow:0 20px 50px #20182926"><img src="' + madre + '" style="width:560px;height:560px;border-radius:24px;box-shadow:0 20px 50px #20182926"></body></html>');
             await board.screenshot({ path: '.artifacts/logo-proposals-board.jpg', quality: 88 });
             console.log('Both SVG logos rendered at 1024x1024');
