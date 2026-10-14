@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+<title id="title">nolhan-dev.com — design and development</title>
+<desc id="desc">A dimensional violet N monogram on a deep purple field, with the nolhan-dev.com signature below.</desc>
+<defs>
+  <radialGradient id="bg" cx="50%" cy="34%" r="77%">
+    <stop offset="0" stop-color="#4D348A"/>
+    <stop offset=".55" stop-color="#271846"/>
+    <stop offset="1" stop-color="#140F2A"/>
+  </radialGradient>
+  <linearGradient id="left" x1="0" x2="1" y1="1" y2="0">
+    <stop offset="0" stop-color="#7964CF"/>
+    <stop offset=".62" stop-color="#B7A4F6"/>
+    <stop offset="1" stop-color="#E2D8FF"/>
+  </linearGradient>
+  <linearGradient id="fold" x1="0" x2="1" y1="0" y2="1">
+    <stop offset="0" stop-color="#F6F0FF"/>
+    <stop offset=".46" stop-color="#B69EF4"/>
+    <stop offset="1" stop-color="#7661CE"/>
+  </linearGradient>
+  <linearGradient id="right" x1="0" x2="1" y1="1" y2="0">
+    <stop offset="0" stop-color="#9D86E7"/>
+    <stop offset=".5" stop-color="#D2C3FF"/>
+    <stop offset="1" stop-color="#FFFFFF"/>
+  </linearGradient>
+  <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="40"/></filter>
+</defs>
+<rect width="1200" height="1200" fill="url(#bg)"/>
+<circle cx="590" cy="430" r="345" fill="#986AEF" opacity=".17" filter="url(#softGlow)"/>
+<circle cx="600" cy="460" r="350" fill="none" stroke="#CAB9FF" stroke-width="2" opacity=".16"/>
+<path d="M251 278h43M251 278v43M949 278h-43M949 278v43M251 700h43M251 700v-43M949 700h-43M949 700v-43" fill="none" stroke="#B9A9F1" stroke-width="3" opacity=".45" stroke-linecap="round"/>
+<g>
+  <path d="M318 288h118v382H318z" fill="url(#left)"/>
+  <path d="M318 288h118l15 18H333v364h-15z" fill="#E8DEFF" opacity=".28"/>
+  <path d="M436 288h103l343 382H778z" fill="url(#fold)"/>
+  <path d="M436 288h103l343 382h-32z" fill="#FFFFFF" opacity=".24"/>
+  <path d="M764 288h118v382H764z" fill="url(#right)"/>
+  <path d="M764 288h20v382h-20z" fill="#45317A" opacity=".22"/>
+  <path d="M318 670h118M764 670h118" stroke="#EDE5FF" stroke-width="8" opacity=".58"/>
+</g>
+<path d="M375 773h450" stroke="#A790E6" stroke-width="2" opacity=".45"/>
+<text x="600" y="881" text-anchor="middle" fill="#FAF7FF" font-family="Arial,Helvetica,sans-serif" font-size="91" font-weight="700" letter-spacing="-3">nolhan-dev.com</text>
+<text x="600" y="955" text-anchor="middle" fill="#C7B5F2" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="600" letter-spacing="11">DESIGN &amp; DEVELOPMENT</text>
+</svg>
