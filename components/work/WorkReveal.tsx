@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import { useRef, type ReactNode } from "react";
 
 type Props = {
@@ -8,9 +8,10 @@ type Props = {
   className?: string;
   delay?: number;
   drift?: number;
+  smoothScale?: boolean;
 };
 
-export default function WorkReveal({ children, className = "", delay = 0, drift = 0 }: Props) {
+export default function WorkReveal({ children, className = "", delay = 0, drift = 0, smoothScale = false }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -25,13 +26,14 @@ export default function WorkReveal({ children, className = "", delay = 0, drift 
   const y = useTransform(scrollYProgress, stops, [drift, 0, 0, -drift]);
   const opacity = useTransform(scrollYProgress, stops, [0.7, 1, 1, 0.7]);
   const scale = useTransform(scrollYProgress, stops, [0.975, 1, 1, 0.975]);
+  const easedScale = useSpring(scale, { stiffness: 110, damping: 27, mass: 0.75 });
   const filter = useTransform(scrollYProgress, stops, ["blur(5px)", "blur(0px)", "blur(0px)", "blur(5px)"]);
 
   return (
     <motion.div
       ref={ref}
       className={className}
-      style={reducedMotion ? undefined : { y, opacity, scale, filter }}
+      style={reducedMotion ? undefined : { y, opacity, scale: smoothScale ? easedScale : scale, filter }}
     >
       {children}
     </motion.div>

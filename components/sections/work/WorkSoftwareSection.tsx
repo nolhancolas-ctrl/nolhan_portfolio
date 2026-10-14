@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
 import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia from "@/components/work/WorkMedia";
@@ -16,6 +17,11 @@ type Props = { media: SelectedWorkMedia };
 export default function WorkSoftwareSection({ media }: Props) {
   const { lang } = useLang();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const planetAnchor = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+  const { scrollYProgress: planetProgress } = useScroll({ target: planetAnchor, offset: ["start end", "end start"] });
+  const planetTargetScale = useTransform(planetProgress, [0, 0.2, 0.8, 1], [0.94, 1, 1, 0.94]);
+  const planetScale = useSpring(planetTargetScale, { stiffness: 110, damping: 27, mass: 0.75 });
   const copy = {
     en: {
       eyebrow: "Systems & interfaces",
@@ -71,12 +77,17 @@ export default function WorkSoftwareSection({ media }: Props) {
 
   return (
     <section id="systems" aria-labelledby="systems-title" className="scroll-mt-28 px-5 pb-20 pt-16 sm:px-8 sm:pb-28 sm:pt-24">
-      <WorkReveal className="relative mb-12 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
-        <h2 id="systems-title" className="mx-auto mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
-        <div className="work-planet pointer-events-none absolute -top-10 right-0 hidden h-40 w-40 lg:block">
-          <ServiceSculpture index={2} preload />
+      <WorkReveal className="relative mb-12 text-center" smoothScale>
+        <div ref={planetAnchor}>
+          <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
+          <h2 id="systems-title" className="mx-auto mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
         </div>
+        <motion.div
+          className="work-planet pointer-events-none absolute -top-10 right-0 hidden h-40 w-40 lg:block"
+          style={reducedMotion ? undefined : { scale: planetScale }}
+        >
+          <ServiceSculpture index={2} preload />
+        </motion.div>
       </WorkReveal>
 
       <WorkReveal drift={15}>
