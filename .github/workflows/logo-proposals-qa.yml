@@ -24,7 +24,7 @@ jobs:
           const fs = require('fs');
           (async () => {
             const browser = await chromium.launch({ headless: true });
-            for (const name of ['fugue', 'madre']) {
+            for (const name of ['fugue', 'madre', 'marge']) {
               const page = await browser.newPage({ viewport: { width: 1024, height: 1024 }, deviceScaleFactor: 1 });
               await page.goto('file://' + path.resolve('public/logos/proposals/' + name + '.svg'));
               const svg = page.locator('svg');
@@ -34,12 +34,14 @@ jobs:
               await page.screenshot({ path: '.artifacts/' + name + '-proposal.jpg', quality: 90 });
               await page.close();
             }
-            const board = await browser.newPage({ viewport: { width: 1280, height: 740 }, deviceScaleFactor: 1 });
+            const board = await browser.newPage({ viewport: { width: 1560, height: 660 }, deviceScaleFactor: 1 });
             const fugue = 'data:image/svg+xml;base64,' + fs.readFileSync('public/logos/proposals/fugue.svg').toString('base64');
             const madre = 'data:image/svg+xml;base64,' + fs.readFileSync('public/logos/proposals/madre.svg').toString('base64');
-            await board.setContent('<html><body style="margin:0;background:#e9e4ea;display:flex;align-items:center;justify-content:center;gap:28px;height:740px"><img src="' + fugue + '" style="width:560px;height:560px;border-radius:24px;box-shadow:0 20px 50px #20182926"><img src="' + madre + '" style="width:560px;height:560px;border-radius:24px;box-shadow:0 20px 50px #20182926"></body></html>');
+            const marge = 'data:image/svg+xml;base64,' + fs.readFileSync('public/logos/proposals/marge.svg').toString('base64');
+            await board.setContent('<html><body style="margin:0;background:#e9e4ea;display:flex;align-items:center;justify-content:center;gap:24px;height:660px"><img src="' + fugue + '" style="width:480px;height:480px;border-radius:24px;box-shadow:0 20px 50px #20182926"><img src="' + madre + '" style="width:480px;height:480px;border-radius:24px;box-shadow:0 20px 50px #20182926"><img src="' + marge + '" style="width:480px;height:480px;border-radius:24px;box-shadow:0 20px 50px #20182926"></body></html>');
+            await board.locator('img').evaluateAll(images => Promise.all(images.map(img => img.decode())));
             await board.screenshot({ path: '.artifacts/logo-proposals-board.jpg', quality: 88 });
-            console.log('Both SVG logos rendered at 1024x1024');
+            console.log('Three SVG logos rendered at 1024x1024');
             await browser.close();
           })().catch(error => { console.error(error); process.exit(1); });
           NODE
@@ -50,5 +52,9 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .artifacts
           git commit -m "Temporary logo proposal previews"
-          git pull --rebase
-          git push
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase
+            if git push; then exit 0; fi
+            sleep 2
+          done
+          exit 1
