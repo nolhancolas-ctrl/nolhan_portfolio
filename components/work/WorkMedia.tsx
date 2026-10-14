@@ -12,6 +12,7 @@ type Props = {
   className?: string;
   priority?: boolean;
   fit?: "natural" | "square" | "stretch";
+  crop?: boolean;
 };
 
 const fallbackTone: Record<WorkMediaTone, string> = {
@@ -33,6 +34,7 @@ export default function WorkMedia({
   className = "",
   priority = false,
   fit = "natural",
+  crop = false,
 }: Props) {
   const frame = fit === "square"
     ? "relative isolate box-border w-full max-w-full aspect-square overflow-hidden rounded-[20px] [clip-path:inset(0_round_20px)]"
@@ -60,7 +62,7 @@ export default function WorkMedia({
             fill
             priority={priority}
             sizes="(min-width: 1280px) 1100px, (min-width: 768px) 90vw, 100vw"
-            className="work-media-image object-contain"
+            className={`work-media-image ${crop ? "object-cover object-center" : "object-contain"}`}
           />
         </div>
       ) : (

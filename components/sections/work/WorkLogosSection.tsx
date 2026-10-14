@@ -100,11 +100,13 @@ export default function WorkLogosSection({ media }: Props) {
 
   return (
     <section id="identities" aria-labelledby="identities-title" className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28">
-      <WorkReveal className="relative mb-10 text-center">
-        <div className="work-mark-sculpture pointer-events-none absolute -left-6 top-1/2 hidden h-40 w-40 -translate-y-[62%] lg:block xl:-left-10 xl:h-44 xl:w-44" aria-hidden="true">
-          <ServiceSculpture index={1} />
+      <WorkReveal className="mb-10 text-center">
+        <div className="relative inline-flex items-center justify-center">
+          <div className="work-mark-sculpture pointer-events-none absolute right-full top-1/2 mr-5 hidden h-28 w-28 -translate-y-1/2 lg:block" aria-hidden="true">
+            <ServiceSculpture index={1} preload />
+          </div>
+          <h2 id="identities-title" className="text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
         </div>
-        <h2 id="identities-title" className="text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
       </WorkReveal>
 
       <WorkReveal>

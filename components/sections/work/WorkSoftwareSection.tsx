@@ -75,7 +75,7 @@ export default function WorkSoftwareSection({ media }: Props) {
         <p className="text-xs font-semibold uppercase tracking-[0.23em] text-slate-600">{copy.eyebrow}</p>
         <h2 id="systems-title" className="mx-auto mt-3 max-w-3xl text-balance text-4xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
         <div className="work-planet pointer-events-none absolute -top-10 right-0 hidden h-40 w-40 lg:block">
-          <ServiceSculpture index={2} />
+          <ServiceSculpture index={2} preload />
         </div>
       </WorkReveal>
 

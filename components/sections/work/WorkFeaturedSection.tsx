@@ -194,7 +194,7 @@ export default function WorkFeaturedSection({ media }: Props) {
               <WorkReveal drift={12} className="h-full">
                 {project.detail ? (
                   <button type="button" onClick={() => openImage(project.detail)} className="block h-full w-full cursor-zoom-in text-left focus-visible:rounded-[26px]" aria-label={copy.open + " — " + project.title}>
-                    <WorkMedia fit="stretch" src={project.detail} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
+                    <WorkMedia fit="stretch" crop={project.tone === "workshop"} src={project.detail} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
                   </button>
                 ) : (
                   <WorkMedia fit="stretch" src={null} alt={project.title + " website detail"} label={project.title} tone={project.tone} width={project.detailWidth} height={project.detailHeight} />
