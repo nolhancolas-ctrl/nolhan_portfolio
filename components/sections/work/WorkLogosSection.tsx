@@ -6,6 +6,7 @@ import { useLang } from "@/hooks/useLang";
 import WorkLightbox from "@/components/work/WorkLightbox";
 import WorkMedia, { type WorkMediaTone } from "@/components/work/WorkMedia";
 import WorkReveal from "@/components/work/WorkReveal";
+import ServiceSculpture from "@/components/layout/visual/ServiceSculpture";
 import type { SelectedWorkMedia } from "@/types/selectedWork";
 
 type Props = { media: SelectedWorkMedia };
@@ -99,7 +100,10 @@ export default function WorkLogosSection({ media }: Props) {
 
   return (
     <section id="identities" aria-labelledby="identities-title" className="scroll-mt-28 px-5 py-20 sm:px-8 sm:py-28">
-      <WorkReveal className="mb-10 text-center">
+      <WorkReveal className="relative mb-10 text-center">
+        <div className="work-mark-sculpture pointer-events-none absolute -left-6 top-1/2 hidden h-40 w-40 -translate-y-1/2 lg:block xl:-left-10 xl:h-44 xl:w-44" aria-hidden="true">
+          <ServiceSculpture index={1} />
+        </div>
         <h2 id="identities-title" className="text-3xl font-semibold tracking-[-0.045em] text-slate-950 sm:text-5xl">{copy.title}</h2>
       </WorkReveal>
 
