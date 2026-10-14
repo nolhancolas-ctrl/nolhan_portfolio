@@ -35,11 +35,11 @@ export default function WorkMedia({
   fit = "natural",
 }: Props) {
   const frame = fit === "square"
-    ? "relative isolate aspect-square overflow-hidden rounded-[20px] [clip-path:inset(0_round_20px)]"
-    : "relative isolate overflow-hidden rounded-[20px] [clip-path:inset(0_round_20px)] lg:aspect-auto lg:h-full";
+    ? "relative isolate box-border w-full max-w-full aspect-square overflow-hidden rounded-[20px] [clip-path:inset(0_round_20px)]"
+    : "relative isolate box-border w-full max-w-full overflow-hidden rounded-[20px] [clip-path:inset(0_round_20px)] lg:aspect-auto lg:h-full";
 
   return (
-    <div className={`work-media isolate min-w-0 overflow-hidden rounded-[26px] border border-white/80 bg-white/55 p-1.5 shadow-[0_18px_50px_rgba(53,39,93,0.10)] backdrop-blur-md ${fit === "stretch" ? "lg:h-full" : ""} ${className}`}>
+    <div className={`work-media isolate box-border w-full min-w-0 max-w-full overflow-hidden rounded-[26px] border border-white/80 bg-white/55 p-1.5 shadow-[0_18px_50px_rgba(53,39,93,0.10)] backdrop-blur-md ${fit === "stretch" ? "lg:h-full" : ""} ${className}`}>
       {src ? fit === "natural" ? (
         <div className="overflow-hidden rounded-[20px]">
           <Image
