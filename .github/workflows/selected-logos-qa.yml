@@ -1,0 +1,93 @@
+name: Selected logo WebP and carousel QA
+on:
+  push:
+    branches: [codex/selected-work-showcase]
+    paths: [.github/workflows/selected-logos-qa.yml]
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - name: Convert selected logos to WebP
+        run: |
+          mkdir -p public/logo .artifacts
+          node <<'NODE'
+          const sharp = require('sharp');
+          const fs = require('fs');
+          const originals = ['terra-sculptura', 'relais', 'tiramisu', 'aube-coffee', 'nero', 'nolhan-colas', 'nomad', 'novera', 'odyssea-vision', 'odyssea-vision2'];
+          const vectors = ['fugue', 'marge', 'nolhan-dev'];
+          (async () => {
+            for (const name of [...originals, ...vectors]) {
+              const source = originals.includes(name) ? '.logo-inputs/' + name + '.png' : 'public/logos/proposals/' + name + '.svg';
+              const output = 'public/logo/' + name + '.webp';
+              await sharp(source, { density: 240 }).resize(1200, 1200, { fit: 'contain', background: '#ffffff' }).webp({ quality: 90, effort: 6 }).toFile(output);
+              const meta = await sharp(output).metadata();
+              if (meta.format !== 'webp' || meta.width !== 1200 || meta.height !== 1200) throw new Error('Invalid WebP: ' + name);
+              console.log(name, fs.statSync(output).size + ' bytes');
+            }
+            const tile = 270, gap = 18, pad = 18;
+            const width = pad * 2 + tile * 4 + gap * 3;
+            const height = pad * 2 + tile * 4 + gap * 3;
+            const order = ['terra-sculptura', 'aube-coffee', 'nomad', 'odyssea-vision', 'relais', 'tiramisu', 'nero', 'novera', 'nolhan-colas', 'fugue', 'marge', 'odyssea-vision2', 'nolhan-dev'];
+            const comps = [];
+            for (let i = 0; i < order.length; i++) {
+              comps.push({ input: await sharp('public/logo/' + order[i] + '.webp').resize(tile, tile).png().toBuffer(), left: pad + (i % 4) * (tile + gap), top: pad + Math.floor(i / 4) * (tile + gap) });
+            }
+            await sharp({ create: { width, height, channels: 3, background: '#ebe6ee' } }).composite(comps).jpeg({ quality: 90 }).toFile('.artifacts/selected-logos-board.jpg');
+            console.log('All 13 WebPs converted and validated');
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+      - run: npm run build
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Verify logo carousel
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3000 > /tmp/work-preview.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:3000/work > /dev/null; then break; fi
+            sleep 2
+          done
+          node <<'NODE'
+          const assert = require('assert');
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ headless: true, args: ['--enable-unsafe-swiftshader', '--use-gl=angle', '--use-angle=swiftshader'] });
+            for (const [width, height, expected] of [[1440, 900, 4], [390, 844, 2]]) {
+              const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+              await page.goto('http://127.0.0.1:3000/work', { waitUntil: 'domcontentloaded' });
+              await page.locator('#identities').scrollIntoViewIfNeeded();
+              await page.waitForTimeout(1000);
+              const rows = page.locator('[data-logo-row]');
+              assert.equal(await rows.count(), 3);
+              for (let i = 0; i < 3; i++) assert.equal(await rows.nth(i).locator('img').count(), expected);
+              const visible = await page.locator('[data-logo-row]').evaluateAll(nodes => nodes.slice(0, 2).flatMap(row => [...row.querySelectorAll('img')].map(img => img.getAttribute('alt'))));
+              assert.equal(new Set(visible).size, expected * 2, 'Visible logos must be distinct');
+              await page.waitForTimeout(4400);
+              const after = await page.locator('[data-logo-row]').evaluateAll(nodes => nodes.slice(0, 2).flatMap(row => [...row.querySelectorAll('img')].map(img => img.getAttribute('alt'))));
+              assert.equal(new Set(after).size, expected * 2, 'No repeated logo after carousel advances');
+              if (width === 1440) await page.locator('#identities').screenshot({ path: '.artifacts/selected-logos-carousel.jpg', quality: 88 });
+              await page.close();
+            }
+            console.log('Desktop and mobile carousel rows remain full and distinct');
+            await browser.close();
+          })().catch(error => { console.error(error); process.exit(1); });
+          NODE
+      - name: Save selected WebPs and QA previews
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/logo .artifacts
+          git commit -m "Add converted selected logo WebPs"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase
+            if git push; then exit 0; fi
+            sleep 2
+          done
+          exit 1
