@@ -99,6 +99,8 @@
 .service-sculpture.is-webgl-ready .sculpture-fallback { opacity: 0; }
 .work-planet .service-sculpture { width: 100%; height: 100%; margin: 0; overflow: visible; }
 .work-planet .sculpture-fallback span { width: 94px; height: 94px; }
+.work-mark-sculpture .service-sculpture { width: 100%; height: 100%; margin: 0; overflow: visible; }
+.work-mark-sculpture .sculpture-fallback span { width: 92px; height: 92px; }
 
 .booking-shell { position: relative; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .cal-frame { position: relative; min-height: 620px; transition: min-height .75s cubic-bezier(.22,1,.36,1), background-color .5s; }
